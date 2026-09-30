@@ -4,13 +4,12 @@
 
 ---
 
-> Agradecimiento especial  
+> Agradecimientos especiales 
 > al **Dr. Jorge A. Lizárraga A.** por su colaboración en el planteamiento conceptual del PILIBOT.
 
 ---
 
 ## Descripción
-
 Actualmente este documento describe el planeamiento, desarrollo e incorporación de un sistema híbrido de control para giros y trayectorias lineales del PILIBOT. El sistema está implementado en un ESP32-C3 y utiliza la IMU MPU6050 para obtener realimentación de orientación.
 
 La arquitectura combina:
