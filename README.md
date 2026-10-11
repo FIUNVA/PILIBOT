@@ -267,12 +267,12 @@ INICIO -> CRUCERO -> DESACELERACIÓN -> CONVERGENCIA
 ```
 
 | Modo y condición de transición | Ley de control | Resultado |
-| --- | --- | --- |
-| **`CRUCERO`**<br>$|e|\geq Z$ | $u=u_{\max}$, con dirección determinada por $\operatorname{sign}(e)$. | El robot ejecuta el giro con una actuación elevada y aproximadamente constante. Esta fase permite reducir rápidamente el error angular mientras el robot se encuentra fuera de la zona de desaceleración. |
-| **`DESACELERACIÓN`**<br>$|e|<Z$, con $Z=\min(Z_{\mathrm{obs}},|\Delta\theta|)$.<br>El piso efectivo se define como $u_f=u_{\min}+\beta$, donde $\beta$ es el refuerzo anti-estancamiento. | $u=u_f+(u_{\max}-u_f)\dfrac{|e|}{Z}$ | El PWM disminuye progresivamente conforme el robot se aproxima al objetivo. La ley mantiene continuidad en el límite $|e|=Z$, donde $u=u_{\max}$. |
-| **`CONVERGENCIA`**<br>$|e|\leq\varepsilon$.<br>En el perfil `PROGRAM_RAMP_LEGACY`, utilizado por la interfaz GUI, la convergencia se declara inmediatamente. | $u=0$, mediante `stopMotors()`. | Se detienen los motores, se considera completada la instrucción y el sistema avanza hacia la siguiente instrucción del programa. |
-| **`CORRECCIÓN`**<br>Cambio de signo del error con $|e|>\varepsilon$, sin sobrepaso previo. | $u=u_f+(u_c-u_f)\min\left(1,\dfrac{|e|}{e_{\mathrm{ref}}}\right)$, aplicando una dirección inversa a la utilizada durante `CRUCERO`. | Se ejecuta un giro de retorno para reducir el sobrepaso angular y aproximar nuevamente la orientación al objetivo. |
-| **`ERROR`**<br>Se agota `programInstructionTimeoutMs` o transcurren 5000 ms dentro de la zona de desaceleración sin alcanzar la convergencia. | $u=0$ y envío de NACK (`TIMEOUT` o `DECEL_TIMEOUT`). | La maniobra se aborta y el sistema establece `currentProgramState = PROGRAM_ERROR`. |
+| :--- | :--- | :--- |
+| **CRUCERO**<br>$\lvert e\rvert \geq Z$ | $u = u_{\text{max}}$, con dirección determinada por $\operatorname{sign}(e)$. | El robot ejecuta el giro con una actuación elevada y aproximadamente constante. Esta fase permite reducir rápidamente el error angular mientras el robot se encuentra fuera de la zona de desaceleración. |
+| **DESACELERACIÓN**<br>$\lvert e\rvert < Z$, con $Z = \min(Z_{\text{obs}}, \lvert \Delta\theta\rvert)$.<br>El piso efectivo se define como $u_f = u_{\text{min}} + \beta$, donde $\beta$ es el refuerzo anti-estancamiento. | $u = u_f + (u_{\text{max}} - u_f)\frac{\lvert e\rvert}{Z}$ | El PWM disminuye progresivamente conforme el robot se aproxima al objetivo. La ley mantiene continuidad en el límite $\lvert e\rvert = Z$, donde $u = u_{\text{max}}$. |
+| **CONVERGENCIA**<br>$\lvert e\rvert \leq \varepsilon$.<br>En el perfil `PROGRAM_RAMP_LEGACY`, utilizado por la interfaz GUI, la convergencia se declara inmediatamente. | $u = 0$, mediante `stopMotors()`. | Se detienen los motores, se considera completada la instrucción y el sistema avanza hacia la siguiente instrucción del programa. |
+| **CORRECCIÓN**<br>Cambio de signo del error con $\lvert e\rvert > \varepsilon$, sin sobrepaso previo. | $u = u_f + (u_c - u_f)\min\left(1, \frac{\lvert e\rvert}{e_{\text{ref}}}\right)$, aplicando una dirección inversa a la utilizada durante `CRUCERO`. | Se ejecuta un giro de retorno para reducir el sobrepaso angular y aproximar nuevamente la orientación al objetivo. |
+| **ERROR**<br>Se agota `programInstructionTimeoutMs` o transcurren 5000 ms dentro de la zona de desaceleración sin alcanzar la convergencia. | $u = 0$ y envío de NACK (`TIMEOUT` o `DECEL_TIMEOUT`). | La maniobra se aborta y el sistema establece `currentProgramState = PROGRAM_ERROR`. |
 
 ## 8. Parámetros de control
 
