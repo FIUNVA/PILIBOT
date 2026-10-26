@@ -381,3 +381,86 @@ El sistema de control del PILIBOT es un controlador jerárquico con lazo abierto
 Sobre esta capa se encuentra un supervisor discreto que detecta sobrepaso, convergencia y estancamiento. Ante un sobrepaso activa una corrección temporal inversa; ante una ausencia prolongada de progreso incrementa el suelo de PWM para superar la fricción estática.
 
 En consecuencia, `yawObserver*` y `forwardTrajectory*` deben entenderse como componentes de supervisión y detección de eventos, no como observadores de estados en el sentido clásico de la teoría de control.
+
+
+# PILIBOT: Democratización de la Robótica Intralogística y Diseño Universal de Espacios
+
+A continuacion se documenta la aplicación de la plataforma experimental **PILIBOT V1.0** como un **entorno de simulación física a escala (1:N)** enfocado en dos pilares clave: la **democratización de la robótica móvil autónoma (AMR/AGV)** para la intralogística en pequeñas y medianas empresas (PyMEs), y la **optimización geométrica de espacios** accesible tanto para vehículos robóticos como para el **diseño universal en personas con movilidad reducida (sillas de ruedas)**.
+
+---
+
+## 📑 Tabla de Contenidos
+1. [Visión General y Problemática](#1-visión-general-y-problemática)
+2. [Democratización de la Robótica Intralogística (AMR/AGV)](#2-democratización-de-la-robótica-intralogística-amragv)
+3. [Gemelo Digital Físico para Optimización Geométrica de Bodegas](#3-gemelo-digital-físico-para-optimización-geométrica-de-bodegas)
+4. [Transferencia Tecnológica al Diseño Universal (Movilidad en Silla de Ruedas)](#4-transferencia-tecnológica-al-diseño-universal-movilidad-en-silla-de-ruedas)
+5. [Modelo de Simulación Físico vs. Digital](#5-modelo-de-simulación-físico-vs-digital)
+6. [Líneas de Investigación y Futuras Implementaciones](#6-líneas-de-investigación-y-futuras-implementaciones)
+
+---
+
+## 1. Visión General y Problemática
+
+En la actualidad, la automatización del almacenamiento, transporte y clasificación de inventarios mediante enjambres de robots móviles autónomos (*Autonomous Mobile Robots* - AMR / *Automated Guided Vehicles* - AGV) se encuentra casi exclusivamente concentrada en gigantes del *e-commerce* como **Amazon** (con sistemas Kiva/Proteus) y **AliExpress / Cainiao**. 
+
+### La Brecha Financiera y Tecnológica
+* **Costos Prohibitivos:** Los sistemas comerciales de robótica móvil tienen costos que oscilan entre **$16,000 MXN y más de $25,000 MXN por nodo**, lo que vuelve inviable su adopción para pequeñas y medianas empresas.
+* **ArquITECTURAS CERRADAS:** Las soluciones de gran escala son propietarias, impidiendo la experimentación de nuevas geometrías de pasillos, algoritmos de enjambre propios o modificaciones operativas.
+* **Falta de Entornos de Pruebas Físicos Accesibles:** Probar la reorganización espacial de un centro de distribución directamente en una infraestructura real implica riesgos operativos y costos de paro significativos.
+
+**PILIBOT V1.0** aborda esta problemática proporcionando una plataforma mecatrónica de arquitectura abierta, tracción diferencial real, supervisión por visión artificial y un costo directo de **$1,015.15 MXN por unidad**, convirtiéndose en una herramienta accesible para validar sistemas logísticos a escala.
+
+---
+
+## 2. Democratización de la Robótica Intralogística (AMR/AGV)
+
+La plataforma PILIBOT trasciende el ámbito educativo para convertirse en una **solución de transferencia tecnológica para PyMEs**:
+
+* **Reducción de la Barrera de Entrada:** Permite a empresas de menor escala emular y probar estrategias de automatización intralogística sin requerir presupuestos millonarios.
+* **Validación de Algoritmos de Enjambre:** Facilita la evaluación de algoritmos cooperativos para la asignación dinámica de tareas, la prevención de colisiones en cruces y el transporte coordinado de carga mediante microrobots.
+* **Gestión Energética Autónoma (*Parámetro "Hambre"*):** Integra monitoreo de batería en tiempo real y estaciones de recarga con acople magnético bipolar, permitiendo modelar ciclos continuos de trabajo en bodegas de alto rendimiento.
+
+---
+
+## 3. Gemelo Digital Físico para Optimización Geométrica de Bodegas
+
+Antes de construir o modificar la infraestructura de un centro de distribución, **PILIBOT actúa como un Gemelo Digital Físico** sobre un plano supervisado por visión artificial cenital (cuadrícula virtual de trabajo):
+
+
+### Áreas de Optimización Geométrica
+1. **Análisis de Densidad de Pasillos:** Determinación de la anchura mínima requerida para permitir el flujo bidireccional de robots sin generar embotellamientos.
+2. **Geometría de Zonas de Giro:** Estudio de radios de curvatura óptimos en intersecciones para minimizar la pérdida de velocidad lineal.
+3. **Distribución de Estaciones de Recarga:** Ubicación estratégica de bahías energéticas para reducir los tiempos de traslado no productivos.
+
+---
+
+## 4. Transferencia Tecnológica al Diseño Universal (Movilidad en Silla de Ruedas)
+
+Un principio mecatrónico fundamental conecta la movilidad de un robot de tracción diferencial con la de una **silla de ruedas manual o eléctrica**: ambos sistemas obedecen a las mismas leyes cinemáticas diferenciales y restricciones de espacio.
+
+### Aplicaciones en Accesibilidad y Arquitectura Inclusiva
+* **Modelado a Escala de Espacios Inclusivos:** Las pruebas geométricas de pasillos y radios de giro en el entorno PILIBOT sirven para validar planos arquitectónicos de hospitales, centros comerciales, escuelas y edificios públicos antes de su construcción.
+* **Simulación de Tráfico Mixto:** Evaluación de la convivencia entre personas en silla de ruedas y sistemas autónomos de servicio en corredores estrechos.
+* **Diseño de Rampas y Zonas de Maniobra:** Determinación de áreas de giro de 360° necesarias en vestíbulos y puertas de acceso para garantizar una movilidad libre de barreras.
+
+---
+
+## 5. Modelo de Simulación Físico vs. Digital
+
+| Característica | Simulación puramente Digital (ej. Gazebo/MATLAB) | Gemelo Digital Físico con PILIBOT |
+| :--- | :--- | :--- |
+| **Fricción y Desgaste Mecánico** | Idealizada / Teórica | **Real (Fricción diferencial y variaciones de motor N20)** |
+| **Deriva Inercial (*Drift*)** | Modelada con ruido sintético | **Real (Sensor IMU MPU6050 con corrección por Visión)** |
+| **Comunicaciones** | Sin latencia real de espectro | **Real (Bluetooth Low Energy 5.0 y NimBLE)** |
+| **Respuesta Energética** | Curvas teóricas de descarga | **Real (Celdas LiPo 2S y BMS con caída de voltaje)** |
+| **Costo de Implementación** | Requiere estaciones de trabajo pesadas | **Accesible ($1,015.15 MXN por robot)** |
+
+---
+
+## 6. Líneas de Investigación y Futuras Implementaciones
+
+1. **Protocolos de Coordinación Multi-Robot Abiertos:** Implementación de algoritmos de subasta de tareas y control distribuido sobre BLE.
+2. **Plano Inteligente Reconfigurable:** Desarrollo de maquetas modulares con paredes móviles para pruebas automatizadas de layouts logísticos.
+3. **Manual de Directrices Arquitectónicas Inclusivas:** Compilación de métricas experimentales de holgura cinemática para su aplicación en normas de accesibilidad urbana.
+
+---
