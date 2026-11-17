@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<script>
+(function(){try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('fiunva-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PILIBOT - Simulador del Sistema de Control</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 426 366'%3e%3cpath fill='%2300D6EB' fill-rule='evenodd' d='M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z'/%3e%3cpath fill='%23000000' fill-rule='evenodd' d='M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z'/%3e%3c/svg%3e">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,700;1,400&display=swap">
+<link rel="stylesheet" href="css/01-tokens.css">
+<link rel="stylesheet" href="css/02-base.css">
+<link rel="stylesheet" href="css/03-buttons.css">
+<link rel="stylesheet" href="css/04-layout.css">
+<link rel="stylesheet" href="css/05-figures.css">
+<link rel="stylesheet" href="css/06-forms.css">
+<link rel="stylesheet" href="css/07-indicators.css">
+<link rel="stylesheet" href="css/08-tables-docs.css">
+<link rel="stylesheet" href="css/09-overrides.css">
+</head>
+<body>
+    <div id="loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s ease">
+      <style>
+        #loader{background:var(--paper,#fff)}
+        #loader.hidden{opacity:0;visibility:hidden}
+        .loader-stage{display:flex;flex-direction:column;align-items:center;gap:1.15rem;z-index:10;width:100%;max-width:560px;padding:0 1.5rem}
+        .loader-logo{width:220px;height:auto}
+        .loader-logo svg{width:100%;height:auto}
+        .loader-title{font:italic 800 1.8rem/1 "Barlow Condensed",Arial Narrow,sans-serif;color:var(--ink,#000);letter-spacing:.04em;margin-top:.5rem;white-space:nowrap}
+        .loader-hud-row{width:100%;display:flex;justify-content:space-between;align-items:baseline;font-family:ui-monospace,SF Mono,Menlo,monospace}
+        .loader-status-msg{font-size:.78rem;color:var(--tf,#00707d);font-weight:700;letter-spacing:.5px}
+        .loader-pct{font:italic 800 2.2rem/1 "Barlow Condensed",Arial Narrow,sans-serif;color:var(--logo-ink,#000);-webkit-text-stroke:1.2px #00D6EB;paint-order:stroke fill}
+        .progress-track{width:100%;height:15px;border:2px solid var(--logo-ink,#000);background:var(--wash,#f1fbfd);transform:skewX(-16deg);padding:2px;position:relative}
+        .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#1447FF,#00D6EB);transition:width .08s linear;animation:barPulse 1s ease-in-out infinite}
+        @keyframes barPulse{0%,100%{opacity:1}50%{opacity:.6}}
+        .terminal-feed{width:100%;font-family:ui-monospace,SF Mono,Menlo,monospace;font-size:.72rem;color:var(--mut,#44595f);border-left:3px solid #FF6A00;padding-left:.75rem;line-height:1.5;min-height:3.4rem;max-height:7.5rem;overflow-y:auto;scroll-behavior:smooth}
+        [data-theme="dark"] #loader{background:var(--paper,#000)}
+        [data-theme="dark"] .loader-title{color:var(--ink,#f2fcfe)}
+        [data-theme="dark"] .loader-status-msg{color:var(--tf,#00D6EB)}
+        [data-theme="dark"] .loader-pct{color:var(--logo-ink,#f2fcfe)}
+        [data-theme="dark"] .progress-track{border-color:var(--logo-ink,#f2fcfe);background:var(--wash,#071418)}
+        [data-theme="dark"] .terminal-feed{color:var(--mut,#93adb3)}
+      </style>
+      <div class="loader-stage">
+        <div id="loader-logo">
+          <svg viewBox="0 0 426 495" role="img" aria-label="FIUNVA" style="width:100%;height:auto">
+            <path fill="#00D6EB" fill-rule="evenodd" d="M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z"/>
+            <path fill="var(--logo-ink,#000)" fill-rule="evenodd" d="M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z"/>
+            <text x="213" y="472" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-style="italic" font-weight="800" font-size="132" fill="var(--logo-ink,#000)" stroke="#00D6EB" stroke-width="7.5" stroke-linejoin="miter" paint-order="stroke fill" letter-spacing="0.03em">FIUNVA</text>
+          </svg>
+        </div>
+        <div class="loader-title">PILIBOT: SIMULADOR DEL SISTEMA DE CONTROL</div>
+        <div class="loader-hud-row">
+          <span class="loader-status-msg" id="simam-status">INICIANDO...</span>
+          <span class="loader-pct" id="simam-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="simam-bar"></div>
+        </div>
+        <div class="terminal-feed" id="simam-logs"></div>
+      </div>
+    </div>
+    <script>
+      (function(){
+        const logs = [
+          'Cargando utilidades...',
+          'Cargando CSS de la interfaz...',
+          'Inicializando terreno...',
+          'Configurando estado del robot...',
+          'Cargando parser de programas...',
+          'Inicializando paso de simulación...',
+          'Preparando gráficos...',
+          'Configurando Monte Carlo...',
+          'Cargando documentación...',
+          'Cargando análisis matemático...',
+          'Cargando bloques de diagramas...',
+          'Cargando escenarios de almacén...',
+          'Sistema listo'
+        ];
+        const total = logs.length;
+        const bar = document.getElementById('simam-bar');
+        const pctEl = document.getElementById('simam-pct');
+        const statusEl = document.getElementById('simam-status');
+        const logsEl = document.getElementById('simam-logs');
+        const loader = document.getElementById('loader');
+
+        // Pulse animation for progress bar
+        let pulseOn = true;
+        setInterval(() => {
+          pulseOn = !pulseOn;
+          if (bar) bar.style.opacity = pulseOn ? '1' : '0.6';
+        }, 1000);
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < total) {
+            const pct = Math.round(((i + 1) / total) * 100);
+            if (bar) bar.style.width = pct + '%';
+            if (pctEl) pctEl.textContent = pct + '%';
+            if (statusEl) statusEl.textContent = i < total - 1 ? 'CARGANDO...' : 'SISTEMA LISTO';
+            if (logsEl) {
+              const div = document.createElement('div');
+              div.textContent = '> ' + logs[i];
+              logsEl.appendChild(div);
+              // Keep only last 3 messages
+              while (logsEl.children.length > 3) {
+                logsEl.removeChild(logsEl.firstChild);
+              }
+              logsEl.scrollTop = logsEl.scrollHeight;
+            }
+            i++;
+          } else {
+            clearInterval(interval);
+            if (bar) bar.style.width = '100%';
+            if (pctEl) pctEl.textContent = '100%';
+            if (statusEl) statusEl.textContent = 'SISTEMA LISTO';
+            if (logsEl) {
+              const div = document.createElement('div');
+              div.textContent = '> Listo';
+              logsEl.appendChild(div);
+              while (logsEl.children.length > 3) {
+                logsEl.removeChild(logsEl.firstChild);
+              }
+            }
+            if (loader) {
+              loader.classList.add('hidden');
+              setTimeout(() => loader.remove(), 600);
+            }
+          }
+        }, 180);
+      })();
+    </script>
+<header><div class="bar"><h1>PILIBOT <span>|</span> Simulador del Sistema de Control</h1><div class="hb"><button id="doc" class="p">Análisis matemático y documentación</button><button id="sav">Guardar</button><button id="lod">Cargar / abrir</button><input id="fil" type="file" accept=".txt,text/plain" hidden><button id="th" aria-label="Cambiar tema">☀︎ / ☾</button></div></div><p class="au pw">POWERED BY FIUNVA</p></header>
+<main class="wrap">
+<section>
+<figure><canvas id="W" width="800" height="500"></canvas>
+<figcaption><b>Figura 1.</b> Plano cenital a escala (tamaño de cuadro configurable): PILIBOT de 66 mm de ancho × 60 mm de largo; ejes en cm. Si el robot toca un borde, la simulación se detiene y marca error. Pinta suelos arrastrando sobre el plano; las curvas de nivel indican la pendiente. Trazo = trayectoria, línea punteada = Yaw objetivo, línea fina = Yaw medido por la IMU.</figcaption></figure>
+<div class="sm" id="sm"></div>
+<div class="kv" id="kv"></div>
+<figure><canvas id="Pl" width="800" height="340"></canvas>
+<figcaption><b>Figura 2.</b> Últimos 12 s: <i>θ</i> y objetivo con banda ±<i>ε</i>, PWM por rueda y error. El sombreado de fondo indica el modo activo del supervisor (ver la simbología bajo las figuras); pasa el cursor sobre la gráfica para inspeccionar valores.</figcaption></figure>
+<h2>5 Resultados por maniobra</h2>
+<table id="rt"><thead><tr><th>#</th><th>Instrucción</th><th>t (s)</th><th>e<sub>ss</sub> (°)</th><th>Sobrepaso (°)</th><th>β</th><th>Estado</th></tr></thead><tbody></tbody></table>
+<h2>6 Análisis de Monte Carlo</h2>
+<div class="row"><label style="grid-template-columns:auto 80px;gap:8px">Giro (°)<input id="mcA" type="number" value="90" style="font:inherit;background:var(--pan);color:var(--fg);border:1px solid var(--ln);padding:3px"></label><button id="mc">Ejecutar 50 giros</button></div>
+<p class="note">Reparte 10 giros por tipo de suelo con variación aleatoria de Kω (±15 %), τ<sub>v</sub> (±25 %) y asimetría (±4 %), usando la pendiente, el ruido y los parámetros actuales.</p>
+<table id="mt"><thead><tr><th>Suelo</th><th>Éxito</th><th>t̄ (s)</th><th>ē<sub>ss</sub> (°)</th><th>Sobrepaso̅ (°)</th><th>β&gt;0</th></tr></thead><tbody></tbody></table>
+</section>
+<aside>
+<h2>1 Entorno</h2>
+<div class="row" id="soils"></div><div class="row"><button id="fill">Rellenar con el pincel</button></div>
+<div id="pE"></div>
+<h2>2 Controlador</h2><div id="pC"></div>
+<h2>3 Programa</h2>
+<div class="row"><select id="pre" aria-label="Programas de ejemplo"></select></div>
+<textarea id="src" spellcheck="false" aria-label="Programa"></textarea>
+<p class="note">TURN_YAW θ [pwm] · TURN_YAW_D Δθ [pwm] · FWD ms [pwm] · BACK ms [pwm] · WAIT ms · STOP · REPEAT n … END · # comentario</p>
+<div class="row"><button class="p" id="run">Ejecutar</button><button id="pau">Pausa</button><button id="rst">Reiniciar robot</button><button id="kick">Empujón +25°</button></div>
+<div id="pS"></div>
+<h2>4 Teoría con tus parámetros</h2><div class="eq" id="eq"></div>
+</aside></main>
+<script src="js/00-utils.js"></script>
+<script src="js/01-world-terrain.js"></script>
+<script src="js/02-robot-state.js"></script>
+<script src="js/03-program-parser.js"></script>
+<script src="js/04-simulation-step.js"></script>
+<script src="js/05-charts.js"></script>
+<script src="js/06-montecarlo.js"></script>
+<script src="js/07-export-cases.js"></script>
+<script src="js/08-docs-dialog.js"></script>
+<script src="js/09-analysis.js"></script>
+<script src="js/10-glossary-html.js"></script>
+<script src="js/11-glossary-logic.js"></script>
+<script src="js/12-program-sim.js"></script>
+<script src="js/13-save-load.js"></script>
+<script src="js/14-maneuvers-explain.js"></script>
+<script src="js/15-block-diagrams.js"></script>
+<script src="js/16-planning.js"></script>
+<script src="js/17-polygon-reference.js"></script>
+<script src="js/18-warehouse-scenarios.js"></script>
+<script src="js/19-warehouse-routes-main.js"></script>
+    <script>
+      (function(){
+        const logs = [
+          'Cargando utilidades...',
+          'Cargando CSS de la interfaz...',
+          'Inicializando terreno...',
+          'Configurando estado del robot...',
+          'Cargando parser de programas...',
+          'Inicializando paso de simulación...',
+          'Preparando gráficos...',
+          'Configurando Monte Carlo...',
+          'Cargando documentación...',
+          'Cargando análisis matemático...',
+          'Cargando bloques de diagramas...',
+          'Cargando escenarios de almacén...',
+          'Sistema listo'
+        ];
+        const total = logs.length;
+        const loader = window.PilibotLoader ? window.PilibotLoader.create() : null;
+        if (!loader) return;
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < total) {
+            const pct = Math.round(((i + 1) / total) * 100);
+            const status = i < total - 1 ? 'CARGANDO...' : 'SISTEMA LISTO';
+            window.PilibotLoader.update(pct, status, logs[i]);
+            i++;
+          } else {
+            clearInterval(interval);
+            window.PilibotLoader.update(100, 'SISTEMA LISTO', 'Listo');
+            setTimeout(() => window.PilibotLoader.hide(), 800);
+          }
+        }, 180);
+      })();
+    </script>
+</body></html>

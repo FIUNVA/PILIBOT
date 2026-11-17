@@ -1,0 +1,66 @@
+/* --- pestañas V y VI: estilo LaTeX --- */
+#sec-aero,#sec-struct{font-size:14px}
+#sec-aero .row .hint,#sec-struct .row .hint{color:var(--accent);font-variant-numeric:tabular-nums}
+#sec-aero .hint.sub,#sec-struct .hint.sub{margin:8px 0 3px;color:var(--ink);font-size:13px;border-bottom:1px solid var(--rule);padding-bottom:1px;letter-spacing:.02em}
+#sec-aero .hint.cap,#sec-struct .hint.cap{margin:2px 0 4px;font-size:12px}
+#sec-aero .hint.cap b,#sec-struct .hint.cap b{color:var(--green);font-weight:700}
+#sec-aero button.go,#sec-struct button.go{background:transparent;color:var(--green);border:1px solid var(--green);font-weight:700}
+#sec-aero button.go:hover,#sec-struct button.go:hover{background:var(--green);color:var(--paper)}
+#ae-hud,#st-hud{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);padding:5px 0;color:var(--ink);font-size:13px;margin-top:8px}
+#ae-hud:empty,#st-hud:empty{display:none}
+#ae-hud b,#st-hud b{color:var(--blue,var(--accent))}
+#ae-leg,#st-leg{border:1px solid var(--ink)}
+#ae-ch{border-color:var(--ink)!important}
+#anload{position:fixed;left:50%;top:46%;transform:translate(-50%,-50%);z-index:60;width:340px;max-width:calc(100% - 32px);background:var(--paper);border:1px solid var(--ink);box-shadow:4px 4px 0 var(--rule);padding:12px 16px 14px;display:none}
+#anload.show{display:block}
+#anload h3{margin:0 0 6px;font-size:13px;font-weight:400;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);border-bottom:1px solid var(--ink);padding-bottom:4px}
+#anload h3 b{color:var(--accent);font-weight:700;margin-right:6px}
+#anload #an-msg{font-size:15px;min-height:2.6em;line-height:1.35}
+#anload .bar{position:relative;height:9px;border:1px solid var(--ink);overflow:hidden;margin:8px 0 5px}
+#anload .bar i{position:absolute;top:0;bottom:0;width:35%;background:var(--accent);animation:anbar 1.3s ease-in-out infinite alternate}
+@keyframes anbar{from{left:0}to{left:65%}}
+#anload h3{display:flex;align-items:center;gap:6px}
+#anload h3 #an-pc{margin-left:auto;color:var(--accent);font-weight:700;letter-spacing:0}
+#anload .spin{width:15px;height:15px;border:2px solid var(--rule);border-top-color:var(--accent);border-right-color:var(--accent);border-radius:50%;animation:anspin .8s linear infinite;flex:none}
+@keyframes anspin{to{transform:rotate(360deg)}}
+#anload .bar i{left:0;width:100%;transform-origin:0 50%;transform:scaleX(.04);animation:none;transition:transform .35s ease;background:repeating-linear-gradient(135deg,var(--accent) 0 6px,color-mix(in srgb,var(--accent) 60%,var(--paper)) 6px 12px);background-size:17px 17px;animation:anstripe .6s linear infinite}
+@keyframes anstripe{to{background-position:17px 0}}
+#anload .tm{gap:10px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between}
+#paint-opts{display:none}
+#paint-opts.show{display:block}
+.pwrap{position:relative;width:100%;border:1px solid var(--rule);background:var(--stage);margin:6px 0}
+.pwrap canvas{position:absolute;left:0;top:0;width:100%;height:100%;cursor:crosshair}
+button.swc{width:20px;height:20px;padding:0;border:1px solid var(--ink)}
+.mot{border:1px solid var(--rule);padding:6px 8px;margin:6px 0}
+.mh{display:flex;align-items:center;gap:8px}.mh b{font-weight:400;flex:1}
+.mot svg{color:var(--accent)}
+button.swc:hover{outline:2px solid var(--accent)}
+#anat-opts{display:none}
+#anat-opts.show{display:block}
+.legend{display:flex; flex-direction:column; gap:2px}
+.lg-tb{display:flex; gap:4px; margin-bottom:4px}
+.lg-tb button,.lg-solo,.lg-chev{font:inherit; color:var(--ink); background:transparent; border:1px solid var(--rule); cursor:pointer}
+.lg-tb button{flex:1; font-size:12px; padding:2px 4px}
+.lg-tb button:hover,.lg-solo:hover{border-color:var(--accent); color:var(--accent)}
+.lg-g{border:1px solid var(--rule); margin-bottom:3px}
+.lg-h{display:flex; align-items:center; gap:6px; padding:3px 5px}
+.lg-h.off{opacity:.55}
+.lg-chev{border:0; width:20px; padding:0; font-size:19px; line-height:1}
+.lg-n{flex:1; min-width:0; cursor:pointer; display:flex; flex-direction:column; line-height:1.15}
+.lg-n b{font-weight:600; font-size:13px} .lg-n small{font-size:11px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.lg-c{font-style:normal; font-size:11px; color:var(--muted); font-variant-numeric:tabular-nums}
+.lg-solo{width:20px; height:20px; padding:0; font-size:12px; line-height:1}
+.lg-h input{accent-color:var(--accent); margin:0}
+.lg-b{border-top:1px dashed var(--rule); padding:3px 6px 3px 26px}
+.lg-b[hidden]{display:none}
+
+.legend label{display:flex; align-items:center; gap:7px; cursor:pointer; font-size:13px; padding:1px 0}
+.legend i{width:16px; height:3px; flex:none; display:inline-block}
+.legend input{accent-color:var(--accent); margin:0}
+#triad{position:absolute; right:10px; bottom:10px; width:96px; height:96px; z-index:2; pointer-events:none}
+#triad text{font-family:inherit; font-style:normal; font-size:15px; fill:var(--ink)}
+#triad line{stroke:var(--ink); stroke-width:1.4}
+#triad path{fill:var(--ink)}
+figcaption{padding:10px 8px 2px; text-align:center; font-size:15px}
+figcaption b{font-weight:700}
+.eq{margin-top:2px; font-size:15px}

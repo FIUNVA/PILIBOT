@@ -1,0 +1,58 @@
+/* ---- panel por pestañas (dock inferior) ---- */
+.panes{position:absolute; left:12px; top:12px; bottom:58px; width:0; z-index:2; pointer-events:none}
+.pane{position:absolute; left:0; top:0; width:min(318px,calc(100vw - 56px)); max-height:100%; display:none; flex-direction:column; pointer-events:auto;
+  background:var(--panel); border:1px solid var(--ink); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:4px 4px 0 var(--rule)}
+.pane.open{display:flex; animation:pin .16s ease-out}
+@keyframes pin{from{opacity:0; transform:translateY(8px)}to{opacity:1; transform:none}}
+.ph{display:flex; align-items:flex-start; gap:8px; padding:8px 10px 6px 12px; border-bottom:3px double var(--ink)}
+.ph .pt{flex:1; font-size:17px; line-height:1.15}
+.ph .pt i{color:var(--tc,var(--accent)); font-style:normal; font-weight:700; margin-right:6px}
+.ph .pt small{display:block; font-size:12px; color:var(--green); margin-top:2px}
+.ph .px{border:0; font-size:20px; line-height:1; padding:0 4px; color:var(--muted); background:none}
+.ph .px:hover{color:var(--paper); background:var(--ink)}
+.pb{overflow:auto; padding:2px 12px 10px; min-height:0; font-size:14.5px}
+.pb>.sec:first-child{border-top:0; margin-top:4px}
+.pb .sec>h2{cursor:pointer; user-select:none; display:flex; align-items:center; gap:6px; margin:0 0 6px; padding:3px 0}
+.pb .sec>h2::before{content:attr(data-n); color:var(--tc,var(--accent)); font-weight:700; text-transform:none; letter-spacing:0; min-width:24px}
+.pb .sec>h2::after{content:"▾"; margin-left:auto; font-size:18px; line-height:1; transition:transform .15s}
+.pb .sec>h2:hover{color:var(--ink)}
+.pb .sec.fold>h2::after{transform:rotate(-90deg)}
+.pb .sec.fold>:not(h2){display:none !important}
+.pb .sec.fold>h2{margin-bottom:0}
+.pb .lnk{font-size:12px; padding:1px 7px; border-color:var(--rule); color:var(--accent)}
+.pb .xref{margin:4px 0 6px; padding:5px 8px; border-left:3px solid var(--green); background:color-mix(in srgb,var(--green) 11%,transparent); font-size:12.5px; color:var(--muted)}
+.dock{position:relative; margin-left:auto; z-index:5; flex:none; display:flex; align-items:stretch; max-width:calc(100% - 20px); overflow-x:auto;
+  background:var(--panel); border:1px solid var(--ink); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:3px 3px 0 var(--rule)}
+.dock button{border:0; border-right:1px solid var(--rule); background:none; padding:6px 10px; font-size:14px; white-space:nowrap; position:relative; letter-spacing:.02em}
+.dock button .nm{font-style:normal; font-weight:700; color:var(--tc); margin-right:6px}
+.dock button{border-bottom:3px solid var(--tc,var(--rule))}
+.dock button:hover{background:var(--ink); color:var(--paper)} .dock button:hover .nm{color:var(--paper)}
+.dock button.on{background:var(--accent); color:var(--accent-ink)} .dock button.on .nm{color:var(--accent-ink)}
+.dock button.act::after{content:""; position:absolute; right:4px; top:4px; width:6px; height:6px; background:var(--accent)}
+.dock button.on.act::after{background:var(--accent-ink)}
+.dock .sep{width:3px; border-left:1px solid var(--ink); border-right:1px solid var(--ink); flex:none}
+.dock button.q{font-size:13px; padding:7px 10px; color:var(--ink); border-bottom-color:var(--rule)} .dock button.q[aria-pressed=true]{color:var(--accent); border-bottom-color:var(--accent)}
+.dock button:last-child{border-right:0}
+.dock button.q:hover,.dock button.q[aria-pressed=true]:hover{color:var(--paper)}
+.tip{position:absolute; left:50%; bottom:12px; transform:translateX(-50%); z-index:3; font-size:13px; color:var(--green); background:var(--panel); border:1px solid var(--rule); padding:3px 10px; white-space:nowrap; transition:opacity .6s; pointer-events:none}
+.tip.gone{opacity:0}
+kbd{font:inherit;font-size:.82em;border:1px solid var(--ink);border-bottom-width:2px;padding:0 5px;margin:0 1px;background:var(--panel);color:var(--ink);line-height:1.35;display:inline-block;min-width:1.2em;text-align:center}
+.dock button kbd{margin:0 0 0 7px;padding:0 3px;font-size:10px;border-color:var(--rule);color:var(--muted);vertical-align:2px;min-width:1em}
+.dock button.on kbd,.dock button:hover kbd{color:inherit;border-color:currentColor;background:transparent}
+@media(max-width:1500px){.dock button kbd{display:none}}
+.dock button.q::before{content:"";display:inline-block;width:7px;height:7px;border:1px solid currentColor;margin-right:6px;vertical-align:0}
+.dock button.q[aria-pressed=true]::before{background:currentColor}
+.dock button.hp{font-size:13px;padding:7px 11px;color:var(--muted);font-weight:700}
+.tip{display:flex;gap:4px 12px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 40px);white-space:normal;box-shadow:3px 3px 0 var(--rule)}
+.tip.gone{pointer-events:none}.tip span+span{border-left:1px solid var(--rule);padding-left:12px}
+@media (max-width:900px){ .dock{margin-left:0; max-width:100%} }
+@media (max-width:640px){ .dock button{padding:7px 9px; font-size:13px} .dock .nm{display:none} .tip{display:none} .panes{left:8px; right:8px; bottom:8px; width:auto} .pane{top:auto; bottom:0; left:0; width:100%; max-height:52vh; box-shadow:0 -3px 0 var(--rule)} header h1{font-size:19px} #triad{bottom:auto; top:8px; width:72px; height:72px} .dock{scrollbar-width:none} .dock::-webkit-scrollbar{display:none} .dock.fade{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent); mask-image:linear-gradient(90deg,#000 calc(100% - 34px),transparent)} }
+.pane i{font-style:normal}
+.pb .hint b,.pb b{color:var(--ink)}
+#ae-go,#st-go{background:var(--green); border-color:var(--green); color:#fff; font-weight:700}
+#ae-go:hover,#st-go:hover{background:var(--ink); border-color:var(--ink); color:var(--paper)}
+#st-rs{border-color:var(--red); color:var(--red)} #st-rs:hover{background:var(--red); color:#fff}
+.dock button.q.g{color:var(--green)} .dock button.q.r{color:var(--red)} .dock button.q.b{color:var(--blue)}
+.dock button.q:hover{color:var(--paper)!important}
+.pb mark{background:color-mix(in srgb,var(--accent) 18%,transparent); color:inherit; padding:0 3px}
+

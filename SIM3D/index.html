@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<script>
+(function(){try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('fiunva-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PILIBOT - Simulador 3D</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 426 366'%3e%3cpath fill='%2300D6EB' fill-rule='evenodd' d='M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z'/%3e%3cpath fill='%23000000' fill-rule='evenodd' d='M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z'/%3e%3c/svg%3e">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/analysis-tabs.css">
+<link rel="stylesheet" href="css/dock-panel.css">
+<link rel="stylesheet" href="css/ui-enhancements.css">
+<link rel="stylesheet" href="css/gamepad.css">
+</head>
+<body>
+    <div id="loader" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s ease">
+      <style>
+        #loader{background:var(--paper,#fff)}
+        #loader.hidden{opacity:0;visibility:hidden}
+        .loader-stage{display:flex;flex-direction:column;align-items:center;gap:1.15rem;z-index:10;width:100%;max-width:560px;padding:0 1.5rem}
+        .loader-logo{width:220px;height:auto}
+        .loader-logo svg{width:100%;height:auto}
+        .loader-title{font:italic 800 1.8rem/1 "Barlow Condensed",Arial Narrow,sans-serif;color:var(--ink,#000);letter-spacing:.04em;margin-top:.5rem;white-space:nowrap}
+        .loader-hud-row{width:100%;display:flex;justify-content:space-between;align-items:baseline;font-family:ui-monospace,SF Mono,Menlo,monospace}
+        .loader-status-msg{font-size:.78rem;color:var(--tf,#00707d);font-weight:700;letter-spacing:.5px}
+        .loader-pct{font:italic 800 2.2rem/1 "Barlow Condensed",Arial Narrow,sans-serif;color:var(--logo-ink,#000);-webkit-text-stroke:1.2px #00D6EB;paint-order:stroke fill}
+        .progress-track{width:100%;height:15px;border:2px solid var(--logo-ink,#000);background:var(--wash,#f1fbfd);transform:skewX(-16deg);padding:2px;position:relative}
+        .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#1447FF,#00D6EB);transition:width .08s linear;animation:barPulse 1s ease-in-out infinite}
+        @keyframes barPulse{0%,100%{opacity:1}50%{opacity:.6}}
+        .terminal-feed{width:100%;font-family:ui-monospace,SF Mono,Menlo,monospace;font-size:.72rem;color:var(--mut,#44595f);border-left:3px solid #FF6A00;padding-left:.75rem;line-height:1.5;min-height:3.4rem;max-height:7.5rem;overflow-y:auto;scroll-behavior:smooth}
+        [data-theme="dark"] #loader{background:var(--paper,#000)}
+        [data-theme="dark"] .loader-title{color:var(--ink,#f2fcfe)}
+        [data-theme="dark"] .loader-status-msg{color:var(--tf,#00D6EB)}
+        [data-theme="dark"] .loader-pct{color:var(--logo-ink,#f2fcfe)}
+        [data-theme="dark"] .progress-track{border-color:var(--logo-ink,#f2fcfe);background:var(--wash,#071418)}
+        [data-theme="dark"] .terminal-feed{color:var(--mut,#93adb3)}
+      </style>
+      <div class="loader-stage">
+        <div id="loader-logo">
+          <svg viewBox="0 0 426 495" role="img" aria-label="FIUNVA" style="width:100%;height:auto">
+            <path fill="#00D6EB" fill-rule="evenodd" d="M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z"/>
+            <path fill="var(--logo-ink,#000)" fill-rule="evenodd" d="M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z"/>
+            <text x="213" y="472" text-anchor="middle" font-family="Barlow Condensed, Arial Narrow, sans-serif" font-style="italic" font-weight="800" font-size="132" fill="var(--logo-ink,#000)" stroke="#00D6EB" stroke-width="7.5" stroke-linejoin="miter" paint-order="stroke fill" letter-spacing="0.03em">FIUNVA</text>
+          </svg>
+        </div>
+        <div class="loader-title">PILIBOT: SIMULADOR 3D</div>
+        <div class="loader-hud-row">
+          <span class="loader-status-msg" id="sim3d-status">INICIANDO...</span>
+          <span class="loader-pct" id="sim3d-pct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="sim3d-bar"></div>
+        </div>
+        <div class="terminal-feed" id="sim3d-logs"></div>
+      </div>
+    </div>
+    <script>
+      (function(){
+        const logs = [
+          'Cargando datos del modelo...',
+          'Decodificando parts-a.js...',
+          'Decodificando parts-b.js...',
+          'Decodificando captures.js...',
+          'Cargando KaTeX...',
+          'Cargando Three.js r128...',
+          'Inicializando escena 3D...',
+          'Cargando geometría del chasis...',
+          'Cargando bandas elásticas...',
+          'Cargando ojos OLED...',
+          'Configurando motores N20...',
+          'Configurando LEDs WS2812B...',
+          'Preparando explosión de piezas...',
+          'Configurando análisis estructural...',
+          'Cargando análisis aerodinámico...',
+          'Cargando visor de planos...',
+          'Cargando figura 4 interactiva...',
+          'Preparando documentación...',
+          'Sistema listo'
+        ];
+        const total = logs.length;
+        const bar = document.getElementById('sim3d-bar');
+        const pctEl = document.getElementById('sim3d-pct');
+        const statusEl = document.getElementById('sim3d-status');
+        const logsEl = document.getElementById('sim3d-logs');
+        const loader = document.getElementById('loader');
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < total) {
+            const pct = Math.round(((i + 1) / total) * 100);
+            if (bar) bar.style.width = pct + '%';
+            if (pctEl) pctEl.textContent = pct + '%';
+            if (statusEl) statusEl.textContent = i < total - 1 ? 'CARGANDO...' : 'SISTEMA LISTO';
+            if (logsEl) {
+              const div = document.createElement('div');
+              div.textContent = '> ' + logs[i];
+              logsEl.appendChild(div);
+              // Keep only last 3 messages
+              while (logsEl.children.length > 3) {
+                logsEl.removeChild(logsEl.firstChild);
+              }
+              logsEl.scrollTop = logsEl.scrollHeight;
+            }
+            i++;
+          } else {
+            clearInterval(interval);
+            if (bar) bar.style.width = '100%';
+            if (pctEl) pctEl.textContent = '100%';
+            if (statusEl) statusEl.textContent = 'SISTEMA LISTO';
+            if (logsEl) {
+              const div = document.createElement('div');
+              div.textContent = '> Listo';
+              logsEl.appendChild(div);
+              while (logsEl.children.length > 3) {
+                logsEl.removeChild(logsEl.firstChild);
+              }
+            }
+            if (loader) {
+              loader.classList.add('hidden');
+              setTimeout(() => loader.remove(), 600);
+            }
+          }
+        }, 180);
+      })();
+    </script>
+<header>
+  <div class="brand"><h1>PILIBOT <span class="bar">|</span> Simulador 3D</h1>
+  <p>Powered by <b>FIUNVA</b></p></div>
+</header>
+<main>
+  <figure class="fig" id="fig" style="margin:0 0 0 0">
+    <canvas id="c" aria-label="Vista 3D interactiva del ensamble"></canvas>
+    <aside class="panel" aria-label="Controles">
+      <h2>Visualización</h2>
+      <div class="row"><span>Modo oscuro</span><label class="sw"><input type="checkbox" id="t-dark"><span></span></label></div>
+      <div class="row"><span>Transparencia</span><label class="sw"><input type="checkbox" id="t-trans"><span></span></label></div>
+      <div class="row"><span>Anatomy</span><label class="sw"><input type="checkbox" id="t-anat"><span></span></label></div>
+      <div id="anat-opts" class="sec">
+        <div class="btns" id="axis-btns">
+          <button data-ax="0" class="on">Plano <i>x</i></button>
+          <button data-ax="2">Plano <i>y</i></button>
+          <button data-ax="1">Plano <i>z</i></button>
+        </div>
+        <input type="range" id="cut" min="0" max="1000" value="500" aria-label="Posición del corte">
+        <div class="row" style="padding-top:0"><span class="hint" id="cut-val"></span><button id="flip">Invertir</button></div>
+      </div>
+      <div class="sec">
+        <h2>Vista</h2>
+        <div class="btns">
+          <button data-v="iso">Isométrica</button><button data-v="front">Frente</button>
+          <button data-v="back">Posterior</button><button data-v="top">Superior</button>
+          <button data-v="bottom">Inferior</button><button data-v="right">Lateral der.</button>
+          <button data-v="left">Lateral izq.</button>
+          <button id="spin">Girar</button>
+        </div>
+        <p class="hint" style="margin:6px 0 0">Arrastrar: rotar · Shift/clic derecho: desplazar · Rueda: zoom</p>
+      </div>
+      <div class="sec">
+        <h2>Interruptor</h2>
+        <div class="row" style="padding-top:0"><span>Encendido</span><label class="sw"><input type="checkbox" id="t-pwr" checked><span></span></label></div>
+        <p class="hint" style="margin:6px 0 0">Al encender, el interruptor y su palanca se deslizan 2.5 mm hacia atrás.</p>
+      </div>
+      <div class="sec">
+        <h2>Ojos OLED</h2>
+        <div class="row" style="padding-top:0"><span>Automático</span><label class="sw"><input type="checkbox" id="t-auto" checked><span></span></label></div>
+        <div class="btns" id="moods">
+          <button data-m="neutral" class="on">Neutral</button><button data-m="happy">Feliz</button>
+          <button data-m="angry">Enojado</button><button data-m="sad">Triste</button>
+          <button data-m="surprised">Sorpresa</button><button data-m="sleepy">Sueño</button>
+          <button id="blink">Parpadear</button>
+        </div>
+        <p class="hint" style="margin:6px 0 0">Los ojos siguen el cursor; clic en el modelo: parpadeo.</p>
+      </div>
+      <div class="sec">
+        <h2>Vista explosionada</h2>
+        <input type="range" id="ex-level" min="0" max="1000" value="0" aria-label="Nivel de explosión">
+        <div class="row" style="padding:0"><span class="hint">Nivel</span><span class="hint" id="ex-val">0 %</span></div>
+        <div class="btns" style="margin-top:4px"><button id="ex-play">Reproducir</button><button id="ex-reset">Reiniciar</button></div>
+        <div class="btns" style="margin-top:4px"><button id="ex-fig" type="button">Figura interactiva</button></div>
+        <div class="row" style="padding-bottom:0"><span>Velocidad</span><span class="hint" id="sp-val">×1.00</span></div>
+        <input type="range" id="ex-speed" min="0.25" max="3" step="0.05" value="1" aria-label="Velocidad de la explosión">
+        <p class="hint" style="margin:2px 0 0">Las bandas se desdoblan primero y después salen las piezas.</p>
+      </div>
+      <div class="sec">
+        <h2>Editor de dibujo</h2>
+        <div class="row"><span>Activar editor</span><label class="sw"><input type="checkbox" id="t-paint"><span></span></label></div>
+        <div id="paint-opts">
+          <p class="hint" style="margin:0 0 4px">Cara a colorear (paneles laterales exteriores y tapas):</p>
+          <div class="btns" id="p-faces"></div>
+          <div class="pwrap" id="p-wrap"></div>
+          <div class="btns" id="p-tools"></div>
+          <div class="btns" id="p-sw" style="margin-top:6px"></div>
+          <div class="row"><span>Color</span><input type="color" id="p-col" value="#1f5fbf" style="width:44px;height:24px;padding:0;border:1px solid var(--ink);background:none"></div>
+          <div class="row" style="padding-bottom:0"><span>Grosor</span><span class="hint" id="p-size-v">3.0 mm</span></div>
+          <input type="range" id="p-size" min="0.5" max="14" step="0.5" value="3" aria-label="Grosor del pincel">
+          <div class="row"><span>Simetría espejo</span><label class="sw"><input type="checkbox" id="p-sym"><span></span></label></div>
+          <div class="row"><span>Formas rellenas</span><label class="sw"><input type="checkbox" id="p-fs" checked><span></span></label></div>
+          <div class="row"><span>Pintar sobre el modelo 3D</span><label class="sw"><input type="checkbox" id="p-3d"><span></span></label></div>
+          <div class="btns"><button id="p-undo">Deshacer</button><button id="p-clear">Limpiar</button><button id="p-png">PNG</button></div>
+          <h2 style="margin-top:10px">Diseños predeterminados</h2>
+          <div class="row"><span>Aplicar a las 4 caras</span><label class="sw"><input type="checkbox" id="p-all"><span></span></label></div>
+          <div class="btns" id="p-designs"></div>
+        </div>
+      </div>
+      <div class="sec">
+        <h2>Estilo de ruedas y banda</h2>
+        <div class="btns" id="wm-btns"><button data-wm="A" class="on">A · Banda ranurada</button><button data-wm="B">B · O-ring liso</button></div>
+        <p class="hint" style="margin:4px 0 0" id="wm-info">A: ruedas laterales pequeñas, rueda central mayor y banda plana con ranura y relieves.</p>
+      </div>
+      <div class="sec">
+        <h2>Motores N20 y banda</h2>
+        <div class="pad" id="m-pad" aria-label="Mando de los motores">
+          <div class="gg" aria-hidden="true"><span>I</span><i><b id="gg-L"></b></i><em>rpm</em><i class="r"><b id="gg-R"></b></i><span>D</span></div>
+          <div class="dpad" role="group" aria-label="Cruceta de dirección">
+            <button type="button" class="k up" data-p="fw" title="Avanzar (W · ↑)"><b>▲</b><kbd>W</kbd></button>
+            <button type="button" class="k lf" data-p="tl" title="Giro a la izquierda (A · ←)"><b>◀</b><kbd>A</kbd></button>
+            <button type="button" class="k ct" data-p="st" title="Detener (Espacio)"><b>■</b></button>
+            <button type="button" class="k rt" data-p="tr" title="Giro a la derecha (D · →)"><b>▶</b><kbd>D</kbd></button>
+            <button type="button" class="k dn" data-p="bk" title="Retroceder (S · ↓)"><b>▼</b><kbd>S</kbd></button>
+          </div>
+          <div class="face" role="group" aria-label="Botones de acción">
+            <button type="button" class="k fu bl" id="pad-up" title="Más rápido (E)"><b>+</b><kbd>E</kbd></button>
+            <button type="button" class="k fl gr" id="pad-link" title="Enlazar motores" aria-pressed="false"><b>∥</b><kbd>L</kbd></button>
+            <button type="button" class="k fr rd" id="pad-stop" title="Parar (Espacio)"><b>■</b></button>
+            <button type="button" class="k fd bl" id="pad-dn" title="Más lento (Q)"><b>−</b><kbd>Q</kbd></button>
+          </div>
+        </div>
+        <div class="row"><span>Soltar detiene (modo mando)</span><label class="sw"><input type="checkbox" id="pad-hold" checked><span></span></label></div>
+        <p class="hint" id="pad-hint" style="margin:2px 0 0">Mantén pulsado un botón (o las teclas <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> / flechas) para conducir; <kbd>E</kbd> y <kbd>Q</kbd> cambian la velocidad.</p>
+        <p class="hint" style="margin:8px 0 2px">Control individual de cada motor</p>
+        <div class="mot" id="mot-R"><div class="mh"><svg viewBox="-12 -12 24 24" width="26" height="26" aria-hidden="true"><g id="ico-R"><circle r="9.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle r="2" fill="currentColor"/><path d="M0-9.5V-4M8.2 4.7L3.5 2M-8.2 4.7L-3.5 2" stroke="currentColor" stroke-width="1.6"/></g></svg>
+          <b>Motor derecho</b><span class="hint" id="rd-R">0 rpm</span></div>
+          <input type="range" id="sp-R" min="0" max="150" value="40" aria-label="Velocidad del motor derecho">
+          <div class="btns"><button data-mm="R" data-d="1">↺ Atrás</button><button data-mm="R" data-d="0">■ Parar</button><button data-mm="R" data-d="-1">↻ Adelante</button></div></div>
+        <div class="mot" id="mot-L"><div class="mh"><svg viewBox="-12 -12 24 24" width="26" height="26" aria-hidden="true"><g id="ico-L"><circle r="9.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle r="2" fill="currentColor"/><path d="M0-9.5V-4M8.2 4.7L3.5 2M-8.2 4.7L-3.5 2" stroke="currentColor" stroke-width="1.6"/></g></svg>
+          <b>Motor izquierdo</b><span class="hint" id="rd-L">0 rpm</span></div>
+          <input type="range" id="sp-L" min="0" max="150" value="40" aria-label="Velocidad del motor izquierdo">
+          <div class="btns"><button data-mm="L" data-d="1">↺ Atrás</button><button data-mm="L" data-d="0">■ Parar</button><button data-mm="L" data-d="-1">↻ Adelante</button></div></div>
+        <div class="row"><span>Enlazar motores</span><label class="sw"><input type="checkbox" id="m-link"><span></span></label></div>
+        <p class="hint" style="margin:4px 0 0" id="m-info">Adelante = hacia la tapa frontal. Se ven las ruedas, los ejes y los relieves de la banda al girar (vista inferior o con Transparencia).</p>
+      </div>
+      <div class="sec">
+        <h2>Escenario</h2>
+        <div class="row"><span>Superficie plana</span><label class="sw"><input type="checkbox" id="fl-on"><span></span></label></div>
+        <div class="hint" id="fl-hud" style="margin:4px 0">Activa el escenario y acciona los motores: el robot avanza y gira sobre el piso.</div>
+        <div class="hint" style="margin:6px 0 3px">Cámara</div>
+        <div class="btns" id="cam-btns"><button data-cam="static">Estática</button><button data-cam="follow" class="on">Sigue al robot</button><button data-cam="chase">Persecución</button><button data-cam="top">Cenital</button></div>
+        <p class="hint" style="margin:3px 0 0" id="cam-info"></p>
+        <div class="btns" style="margin-top:6px"><button id="fl-reset">Reiniciar posición</button></div>
+      </div>
+            <div class="sec" id="sec-aero">
+        <h2>Análisis aerodinámico</h2>
+        <div class="row"><span>Activar análisis</span><label class="sw"><input type="checkbox" id="ae-on"><span></span></label></div>
+        <div class="hint" id="ae-st" style="margin:4px 0">Flujo potencial real alrededor del robot, mapa de presión (Cp), líneas de corriente y fuerzas. Funciona con o sin golpe de aire; con el escenario activo y el robot en marcha se suma el viento aparente del avance.</div>
+        <div class="hint sub">Pruebas rápidas</div>
+        <div class="btns" id="ae-pre"><button data-ap="front">Ráfaga frontal</button><button data-ap="back">Cola</button><button data-ap="side">Lateral</button><button data-ap="down">Cenital</button><button data-ap="bang">Golpe fuerte</button><button data-ap="calm">Sin viento</button></div>
+        <div class="hint sub">Tipo de viento</div>
+        <div class="btns" id="ae-mode"><button data-am="const" class="on">Túnel constante</button><button data-am="gust">Ráfaga</button><button data-am="bang">Golpe de aire</button><button data-am="turb">Turbulencia</button></div>
+        <div class="row"><span>Velocidad del aire</span><span class="hint" id="ae-uv">12 m/s</span></div>
+        <input type="range" id="ae-u" min="0" max="40" step="0.5" value="12" aria-label="Velocidad del aire">
+        <div class="row"><span>Viene de (azimut)</span><span class="hint" id="ae-azv">0° · frente</span></div>
+        <input type="range" id="ae-az" min="0" max="359" value="0" aria-label="Azimut">
+        <div class="row"><span>Elevación</span><span class="hint" id="ae-elv">0°</span></div>
+        <input type="range" id="ae-el" min="-60" max="60" value="0" aria-label="Elevación">
+        <div class="row"><span>Duración de la ráfaga</span><span class="hint" id="ae-dv">2.5 s</span></div>
+        <input type="range" id="ae-d" min="5" max="60" value="25" aria-label="Duración">
+        <div class="btns" style="margin-top:6px"><button id="ae-go" class="go">Lanzar golpe de aire</button></div>
+        <div class="hint sub">Vista</div>
+        <div class="btns" id="ae-view"><button data-av="both" class="on">Presión + flujo</button><button data-av="cp">Sólo presión</button><button data-av="flow">Sólo flujo</button></div>
+        <div class="row"><span>Radiografía (transparente)</span><label class="sw"><input type="checkbox" id="ae-x"><span></span></label></div>
+        <div class="row"><span>Sumar viento por el avance</span><label class="sw"><input type="checkbox" id="ae-app" checked><span></span></label></div>
+        <div class="row"><span>El viento empuja al robot</span><label class="sw"><input type="checkbox" id="ae-push" checked><span></span></label></div>
+        <div class="row"><span>Cámara lenta del flujo</span><span class="hint" id="ae-sv">×0.020</span></div>
+        <input type="range" id="ae-s" min="2" max="100" value="20" aria-label="Escala de tiempo del flujo">
+        <div class="hint cap" style="margin-top:8px"><b>Escala.</b> Coeficiente de presión C<sub>p</sub>.</div>
+        <canvas id="ae-leg" width="240" height="26" style="width:100%;height:26px;margin-top:6px"></canvas>
+        <div class="row" style="padding:0"><span class="hint">Cp −1.2 (succión)</span><span class="hint">0</span><span class="hint">+1 (estancamiento)</span></div>
+        <div id="ae-hud" class="hint" style="margin:6px 0 0;line-height:1.55"></div>
+        <canvas id="ae-ch" width="240" height="64" style="width:100%;height:64px;border:1px solid var(--rule);margin-top:4px"></canvas>
+        <div class="hint cap"><b>Gráfica.</b> Arrastre sobre el robot en función del tiempo.</div>
+      </div>
+      <div class="sec" id="sec-struct">
+        <h2>Análisis estructural</h2>
+        <div class="row"><span>Activar análisis</span><label class="sw"><input type="checkbox" id="st-on"><span></span></label></div>
+        <div class="hint" id="st-st" style="margin:4px 0">Caída libre o golpe desde cualquier dirección: esfuerzo por trayectoria de carga sobre el modelo voxelizado, deformación exagerada, daño por pieza y altura crítica.</div>
+        <div class="btns" id="st-test"><button data-st="drop" class="on">Caída</button><button data-st="hit">Golpe</button></div>
+        <div id="st-drop">
+          <div class="hint sub">Orientación al caer</div>
+          <div class="btns" id="st-or"><button data-so="wheels" class="on">Ruedas</button><button data-so="front">Frente</button><button data-so="back">Atrás</button><button data-so="left">Lado izq.</button><button data-so="right">Lado der.</button><button data-so="top">Boca abajo</button><button data-so="corner">Esquina</button></div>
+          <div class="row"><span>Altura de caída</span><span class="hint" id="st-hv">50 cm</span></div>
+          <input type="range" id="st-h" min="1" max="200" value="50" aria-label="Altura de caída">
+          <div class="hint sub">Superficie</div>
+          <div class="btns" id="st-sf"><button data-sf="conc" class="on">Concreto</button><button data-sf="wood">Madera</button><button data-sf="rub">Goma</button><button data-sf="foam">Espuma</button></div>
+        </div>
+        <div id="st-hit" style="display:none">
+          <div class="hint sub">Dirección del golpe</div>
+          <div class="btns" id="st-di"><button data-sd="front" class="on">De frente</button><button data-sd="back">Por detrás</button><button data-sd="left">Desde la izq.</button><button data-sd="right">Desde la der.</button><button data-sd="top">Desde arriba</button></div>
+          <div class="row"><span>Masa del impactor</span><span class="hint" id="st-mv">200 g</span></div>
+          <input type="range" id="st-m" min="20" max="500" step="10" value="200" aria-label="Masa del impactor">
+          <div class="row"><span>Velocidad del impacto</span><span class="hint" id="st-vv">4.0 m/s</span></div>
+          <input type="range" id="st-v" min="5" max="120" value="40" aria-label="Velocidad del impacto">
+          <div class="row"><span>Altura del punto</span><span class="hint" id="st-pyv">55 %</span></div>
+          <input type="range" id="st-py" min="0" max="100" value="55" aria-label="Altura del punto de impacto">
+          <div class="row"><span>Posición lateral</span><span class="hint" id="st-pxv">50 %</span></div>
+          <input type="range" id="st-px" min="0" max="100" value="50" aria-label="Posición lateral del impacto">
+          <div class="row"><span>Apuntar con clic sobre el robot</span><label class="sw"><input type="checkbox" id="st-aim"><span></span></label></div>
+        </div>
+        <div class="row"><span>Exagerar deformación</span><span class="hint" id="st-av">×15</span></div>
+        <input type="range" id="st-a" min="1" max="100" value="15" aria-label="Exageración">
+        <div class="row"><span>Cámara lenta</span><span class="hint" id="st-sv">×0.25</span></div>
+        <input type="range" id="st-s" min="2" max="100" value="25" aria-label="Cámara lenta">
+        <div class="row"><span>Radiografía (transparente)</span><label class="sw"><input type="checkbox" id="st-x"><span></span></label></div>
+        <div class="btns" style="margin-top:6px"><button id="st-go" class="go">Soltar</button><button id="st-rs">Restaurar</button></div>
+        <div class="hint cap" style="margin-top:8px"><b>Escala.</b> Esfuerzo relativo σ/σ<sub>y</sub>.</div>
+        <canvas id="st-leg" width="240" height="26" style="width:100%;height:26px;margin-top:6px"></canvas>
+        <div class="row" style="padding:0"><span class="hint">σ/σy 0</span><span class="hint">0.5</span><span class="hint">≥ 1 (falla)</span></div>
+        <div id="st-hud" class="hint" style="margin:6px 0 0;line-height:1.55"></div>
+      </div>
+      <div class="sec">
+        <h2>LED RGB WS2812B</h2>
+        <div class="row"><span>Encendido</span><label class="sw"><input type="checkbox" id="led-on" checked><span></span></label></div>
+        <div class="row"><span>Color <i id="led-sw" style="display:inline-block;width:14px;height:14px;border:1px solid var(--rule);vertical-align:-2px;margin-left:6px"></i></span><input type="color" id="led-col" value="#ff2d55" aria-label="Color del LED" style="width:44px;height:26px;padding:0;border:1px solid var(--rule);background:none"></div>
+        <div class="row"><span>Brillo</span><span class="hint" id="led-bv">80 %</span></div>
+        <input type="range" id="led-br" min="0" max="100" value="80" aria-label="Brillo del LED">
+        <div class="row"><span>Velocidad</span><span class="hint" id="led-sv">×1.0</span></div>
+        <input type="range" id="led-sp" min="20" max="400" value="100" aria-label="Velocidad de la secuencia">
+        <div class="btns" id="led-seq"></div>
+        <div class="row"><span>LEDs de estado (rojos + azul)</span><label class="sw"><input type="checkbox" id="rl-on" checked><span></span></label></div>
+        <p class="hint" style="margin:4px 0 0">El LED está bajo la tapa superior: usa Transparencia o la vista explosionada para verlo emitir.</p>
+      </div>
+      <div class="sec">
+        <h2>Cuerpos</h2>
+        <div class="legend" id="legend"></div>
+      </div>
+    </aside>
+    <svg id="triad" viewBox="-48 -48 96 96" aria-hidden="true"></svg>
+  </figure>
+  <span id="dims" hidden></span>
+</main>
+
+<!-- interfaz: pestañas y dock -->
+<script src="js/ui/tabs-dock.js"></script>
+<!-- librerías externas -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<!-- datos del modelo -->
+<script src="data/parts-a.js"></script>
+<script src="data/parts-b.js"></script>
+<script src="data/captures.js"></script>
+<!-- simulador (orden importa) -->
+<script src="js/core/data-decode.js"></script>
+<script src="js/core/scene.js"></script>
+<script src="js/geometry/oled.js"></script>
+<script src="js/geometry/bands.js"></script>
+<script src="js/geometry/chassis.js"></script>
+<script src="js/core/state.js"></script>
+<script src="js/core/camera-controls.js"></script>
+<script src="js/core/axes-triad.js"></script>
+<script src="js/ui/ui.js"></script>
+<script src="js/features/wheel-style.js"></script>
+<script src="js/ui/body-tree.js"></script>
+<script src="js/features/explosion.js"></script>
+<script src="js/features/motors.js"></script>
+<script src="js/features/leds.js"></script>
+<script src="js/features/eyes.js"></script>
+<script src="js/features/draw-editor.js"></script>
+<script src="js/features/floor.js"></script>
+<script src="js/analysis/solver.js"></script>
+<script src="js/analysis/voxels.js"></script>
+<script src="js/analysis/overlay.js"></script>
+<script src="js/analysis/wind.js"></script>
+<script src="js/analysis/aero.js"></script>
+<script src="js/analysis/structural.js"></script>
+<script src="js/docs/blueprints.js"></script>
+<script src="js/docs/doc-builder.js"></script>
+<script src="js/viewers/v3-viewer.js"></script>
+<script src="js/viewers/components-step.js"></script>
+<script src="js/viewers/fig4.js"></script>
+<script src="js/viewers/leaders.js"></script>
+<script src="js/main.js"></script>
+    <script>
+      (function(){
+        const logs = [
+          'Cargando datos del modelo...',
+          'Decodificando parts-a.js...',
+          'Decodificando parts-b.js...',
+          'Decodificando captures.js...',
+          'Cargando KaTeX...',
+          'Cargando Three.js r128...',
+          'Inicializando escena 3D...',
+          'Cargando geometría del chasis...',
+          'Cargando bandas elásticas...',
+          'Cargando ojos OLED...',
+          'Configurando motores N20...',
+          'Configurando LEDs WS2812B...',
+          'Preparando explosión de piezas...',
+          'Configurando análisis estructural...',
+          'Cargando análisis aerodinámico...',
+          'Cargando visor de planos...',
+          'Cargando figura 4 interactiva...',
+          'Preparando documentación...',
+          'Sistema listo'
+        ];
+        const total = logs.length;
+        const loader = window.PilibotLoader ? window.PilibotLoader.create() : null;
+        if (!loader) return;
+
+        let i = 0;
+        const interval = setInterval(() => {
+          if (i < total) {
+            const pct = Math.round(((i + 1) / total) * 100);
+            const status = i < total - 1 ? 'CARGANDO...' : 'SISTEMA LISTO';
+            window.PilibotLoader.update(pct, status, logs[i]);
+            i++;
+          } else {
+            clearInterval(interval);
+            window.PilibotLoader.update(100, 'SISTEMA LISTO', 'Listo');
+            setTimeout(() => window.PilibotLoader.hide(), 800);
+          }
+        }, 180);
+      })();
+    </script>

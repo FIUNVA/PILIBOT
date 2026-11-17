@@ -1,0 +1,36 @@
+/* ---- mejoras de interfaz: marcas centradas, teclas pulsables, controles deslizantes, mando ---- */
+.sw span::before,input[type=checkbox]:not(.sw>input)::before{content:""; position:absolute; inset:0; width:auto; height:auto; margin:0; border:0; transform:none; background:var(--accent);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.4 6.7 11.9 12.8 4.6' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E") center/84% 84% no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.4 6.7 11.9 12.8 4.6' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='square'/%3E%3C/svg%3E") center/84% 84% no-repeat}
+input[type=checkbox]:not(.sw>input){position:relative}
+.row:has(.sw)>span:not(.sw span){cursor:pointer}
+button{box-shadow:2px 2px 0 var(--rule); transition:background .12s,color .12s,transform .06s,box-shadow .06s}
+button:active,button.press{transform:translate(2px,2px); box-shadow:0 0 0 var(--rule)}
+.dock button,.ph .px,.lg-tb button,.lg-chev,.lg-solo,button.swc,.pb .lnk{box-shadow:none}
+.dock button:active{transform:none}
+.btns button{min-height:26px}
+input[type=range]{cursor:pointer; --p:50%}
+input[type=range]::-webkit-slider-runnable-track{height:2px; background:linear-gradient(to right,var(--accent) var(--p),var(--ink) var(--p))}
+input[type=range]::-moz-range-progress{height:2px; background:var(--accent)}
+input[type=range]::-moz-range-track{height:2px}
+input[type=range]::-webkit-slider-thumb{margin-top:-6px; transition:transform .1s, background .1s}
+input[type=range]:hover::-webkit-slider-thumb,input[type=range]:active::-webkit-slider-thumb{background:var(--accent); transform:scaleY(1.15)}
+/* mando de los motores */
+.pad{display:flex; justify-content:space-between; align-items:center; gap:10px; margin:8px 0 6px; padding:10px 12px; border:1px solid var(--ink); background:color-mix(in srgb,var(--rule) 14%,transparent); position:relative}
+.pad::before{content:"mando"; position:absolute; left:8px; top:-8px; padding:0 5px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); background:var(--panel)}
+.dpad,.face{display:grid; grid-template-columns:repeat(3,38px); grid-template-rows:repeat(3,38px); gap:0}
+.pad .k{width:38px; height:38px; padding:0; position:relative; display:flex; align-items:center; justify-content:center; font-size:16px; touch-action:none; user-select:none}
+.pad .k b{font-weight:400; line-height:1; pointer-events:none}
+.pad .k kbd{position:absolute; right:2px; bottom:1px; margin:0; padding:0 2px; font-size:9px; line-height:1.3; min-width:0; border-width:1px; border-color:var(--rule); color:var(--muted); background:transparent; pointer-events:none}
+.face .k kbd{right:-5px; top:-5px; bottom:auto; background:var(--panel)}
+.pad .k:hover kbd,.pad .k.on kbd,.pad .k.press kbd{color:inherit; border-color:currentColor}
+.dpad .up{grid-area:1/2} .dpad .lf{grid-area:2/1} .dpad .ct{grid-area:2/2} .dpad .rt{grid-area:2/3} .dpad .dn{grid-area:3/2}
+.face .fu{grid-area:1/2} .face .fl{grid-area:2/1} .face .fr{grid-area:2/3} .face .fd{grid-area:3/2}
+.pad .k{border-radius:0}
+.dpad .k{border-color:var(--ink)} .dpad .ct{color:var(--red); border-color:var(--red)} .dpad .ct:hover{background:var(--red); color:#fff}
+.face .k{border-radius:50%; width:36px; height:36px; margin:1px}
+.face .bl{color:var(--blue); border-color:var(--blue)} .face .gr{color:var(--green); border-color:var(--green)} .face .rd{color:var(--red); border-color:var(--red)}
+.face .bl:hover{background:var(--blue); color:var(--paper)} .face .gr:hover,.face .gr.on{background:var(--green); color:var(--paper); border-color:var(--green)} .face .rd:hover{background:var(--red); color:#fff}
+.dpad .k.press,.dpad .k:active{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.face .k:active{background:currentColor} .face .k:active b{color:var(--paper)}
+

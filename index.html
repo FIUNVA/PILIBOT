@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+<script>
+(function(){try{var t=new URLSearchParams(location.search).get('theme')||localStorage.getItem('fiunva-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PILIBOT - FIUNVA</title>
+    <meta property="og:title" content="PILIBOT - FIUNVA">
+    <meta property="og:description" content="Minirobots autónomos de bajo costo con arquitectura electrónica, mecánica y de software propia para experimentar con control, visión y navegación en un tablero real.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="TU_URL_CANONICA_AQUI">
+    <meta property="og:site_name" content="FIUNVA">
+    <meta property="og:image" content="/assets/img/IM1.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image" content="/assets/img/IM2.png">
+    <meta property="og:image" content="/assets/img/IM3.png">
+    <meta property="og:image" content="/assets/img/IM4.png">
+    <meta property="og:image" content="/assets/img/IM5.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 426 366'%3e%3cpath fill='%2300D6EB' fill-rule='evenodd' d='M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z'/%3e%3cpath fill='%23000000' fill-rule='evenodd' d='M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z'/%3e%3c/svg%3e">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,700;1,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#fbfbfd; --alt:#f5f5f7; --card:#ffffff; --ink:#1d1d1f; --muted:#6e6e73; --rule:#d2d2d7;
+    --accent:#0071e3; --accent-ink:#ffffff; --nav:rgba(251,251,253,.8);
+    /* FIUNVA brand */
+    --cf:#00D6EB; --cr:#FF6A00; --ce:#1447FF; --cc:#C9CED3; --logo-ink:#000000;
+    --dsp:"Barlow Condensed","Arial Narrow",sans-serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Inter","Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,monospace;
+    color-scheme:light;
+  }
+  :root[data-theme="dark"]{
+    --paper:#000000; --alt:#0d0d0f; --card:#1d1d1f; --ink:#f5f5f7; --muted:#a1a1a6; --rule:#3a3a3d;
+    --accent:#2997ff; --accent-ink:#ffffff; --nav:rgba(0,0,0,.72);
+    --ce:#2D5BFF; --logo-ink:#f2fcfe;
+    color-scheme:dark;
+  }
+
+  /* Wordmark FIUNVA (sin cambios) */
+  .fiunva-svg-wordmark{
+    font-family:var(--dsp); font-style:italic; font-weight:700;
+    fill:var(--logo-ink); stroke:var(--cf); stroke-width:5.5px; stroke-linejoin:miter;
+    paint-order:stroke fill; letter-spacing:0; transition:fill .25s,stroke .25s;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+  body{
+    background:var(--paper); color:var(--ink); font-family:var(--sans);
+    font-size:17px; line-height:1.47; letter-spacing:-.011em;
+    -webkit-font-smoothing:antialiased; transition:background .25s,color .25s;
+  }
+  ::selection{background:var(--accent);color:var(--accent-ink)}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* Splash */
+  #splash{position:fixed;inset:0;background:var(--paper);z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;transition:opacity .6s ease,visibility .6s ease}
+  #splash.hidden{opacity:0;visibility:hidden;pointer-events:none}
+  .bar{width:160px;height:3px;border-radius:2px;background:var(--rule);overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:var(--ink);border-radius:2px;transition:width .25s ease}
+
+  /* Navegación translúcida */
+  nav.top{position:sticky;top:0;z-index:100;height:60px;background:var(--nav);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid color-mix(in srgb,var(--rule) 60%,transparent)}
+  nav.top .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:600;font-size:17px}
+    .brand:hover{text-decoration:none}
+    .brand small{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--muted);margin-left:2px}
+    .nav-powered{font-size:11px;font-weight:700;letter-spacing:.08em;color:#0066cc;margin-left:4px}
+    [data-theme="dark"] .nav-powered{color:#4da6ff}
+  .links{display:flex;gap:28px;font-size:13px}
+  .links a{position:relative;color:var(--ink);opacity:.8;transition:opacity .2s}
+  .links a:hover,.links a.active{opacity:1;text-decoration:none}
+  .links a::after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--e1),var(--e2),var(--e3));transform:scaleX(0);transform-origin:center;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+  .links a:hover::after,.links a.active::after{transform:scaleX(1)}
+  #th{background:none;border:0;color:var(--ink);opacity:.8;cursor:pointer;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:16px;transition:background .2s}
+  #th:hover{opacity:1;background:var(--alt)}
+
+  /* Botones */
+  .btn{display:inline-flex;align-items:center;justify-content:center;font:inherit;font-size:17px;line-height:1;padding:12px 22px;border-radius:980px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;transition:background .2s,color .2s,filter .2s}
+  .btn:hover{background:var(--accent);color:var(--accent-ink);text-decoration:none}
+  .btn-primary{background:var(--accent);color:var(--accent-ink)}
+  .btn-primary:hover{filter:brightness(1.1)}
+  .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  /* Hero */
+  .hero{text-align:center;padding:36px 22px 72px}
+  .hero .logo{display:flex;justify-content:center;margin-bottom:36px}
+  .hero h1{width:clamp(220px,32vw,380px);margin:0 auto;line-height:0}
+  .hero h1 svg{width:100%;height:auto;overflow:visible;display:block}
+  .hero .tagline{font-size:clamp(21px,3.2vw,32px);line-height:1.2;font-weight:600;letter-spacing:-.02em;margin-top:14px}
+  .hero .lead{max-width:640px;margin:22px auto 22px;color:var(--muted);font-size:19px;line-height:1.5}
+  .chips{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:36px}
+  .chip{font-size:13px;padding:5px 14px;border-radius:980px;border:1.5px solid var(--rule);color:var(--ink)}
+  body:not(.loaded) .hero>*{opacity:0;transform:translateY(14px)}
+  .hero>*{transition:opacity .9s ease,transform .9s ease}
+  .hero>*:nth-child(2){transition-delay:.08s}.hero>*:nth-child(3){transition-delay:.16s}.hero>*:nth-child(4){transition-delay:.24s}.hero>*:nth-child(5){transition-delay:.32s}
+
+  /* Secciones */
+  section.block{padding:96px 0}
+  section.alt{background:var(--alt)}
+  .head{text-align:center;max-width:960px;margin:0 auto 56px}
+  .head h2{font-size:clamp(34px,5.4vw,56px);line-height:1.07;font-weight:700;letter-spacing:-.035em}
+  .head p{margin:14px auto 0;max-width:900px;color:var(--muted);font-size:21px;line-height:1.38;letter-spacing:-.016em}
+
+  /* Simuladores */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .tile{background:var(--card);border-radius:28px;padding:44px 40px 40px;display:flex;flex-direction:column;min-height:520px;text-align:center;align-items:center}
+  .tile.inv{background:var(--ink);color:var(--paper)}
+  .tile h3{font-size:32px;line-height:1.1;font-weight:700;letter-spacing:-.03em}
+  .tile .kicker{font-size:14px;color:var(--muted);margin-top:8px}
+  .tile.inv .kicker{color:color-mix(in srgb,var(--paper) 62%,transparent)}
+  .tile .art{flex:1;display:grid;place-items:center;width:100%;margin:20px 0}
+  .tile .art svg{width:min(340px,94%);height:auto;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+  .tile:hover .art svg{transform:translateY(-6px) scale(1.05)}
+  .art .soft{stroke:var(--muted);opacity:.5;stroke-width:1.2}
+  .art .dash{stroke-dasharray:4 5}
+  .tile:hover .art .dash{animation:dash 1s linear infinite}
+  @keyframes dash{to{stroke-dashoffset:-18}}
+  .tile p{font-size:15px;line-height:1.45;max-width:60ch;color:var(--muted);margin-bottom:26px}
+  .tile.inv p{color:color-mix(in srgb,var(--paper) 70%,transparent)}
+  .tile .row{gap:10px}
+  .tile .btn{font-size:15px;padding:10px 18px}
+  .tile.inv .btn:not(.btn-primary){color:#2997ff;border-color:#2997ff}
+
+  /* Cifras */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center;margin-bottom:64px}
+  .stat b{display:block;font-size:clamp(30px,4.6vw,48px);line-height:1.05;font-weight:700;letter-spacing:-.035em}
+  .stat span{font-size:14px;color:var(--muted)}
+
+  /* Especificaciones */
+  .specs{display:flex;flex-wrap:wrap;gap:20px;justify-content:center;max-width:none}
+    #precios .specs{flex-wrap:nowrap}
+    #precios .spec.pr{min-width:400px}
+  .spec{background:var(--card);border-radius:24px;padding:34px 36px}
+  .spec h3{font-size:24px;font-weight:700;letter-spacing:-.025em;margin-bottom:10px}
+  .spec p{font-size:16px;line-height:1.5;color:var(--muted)}
+
+  /* Galería */
+  .media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+  .media-item{border-radius:24px;overflow:hidden;aspect-ratio:16/9;background:var(--card);position:relative}
+  .media-item img,.media-item video{width:100%;height:100%;object-fit:cover;display:block}
+  .media-item video{object-fit:contain;background:#000}
+  .media-item img.alpha{object-fit:contain;padding:5%;box-sizing:border-box}
+  .media-caption{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 14px;color:#fff;font-size:13px;background:linear-gradient(transparent,rgba(0,0,0,.65))}
+  .add-media{grid-column:1/-1;min-height:200px;border-radius:24px;border:1.5px dashed var(--rule);background:transparent;color:var(--accent);font:inherit;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:background .2s,border-color .2s}
+  .add-media:hover{background:var(--card);border-color:var(--accent)}
+  .add-media .plus{font-size:28px;font-weight:300;line-height:1}
+
+  /* Pie de página */
+  footer{background:var(--alt);border-top:1px solid var(--rule);padding:44px 0 40px;font-size:12px;color:var(--muted)}
+  .eqn{font-size:21px;font-weight:600;letter-spacing:-.01em;color:var(--ink);margin-bottom:18px;font-family:"Latin Modern Roman","CMU Serif","Times New Roman",serif}
+  .eqn i{margin:0 .2em}
+  .flinks{display:flex;gap:22px;flex-wrap:wrap}
+  .flinks a{color:var(--muted)} .flinks a:hover{color:var(--ink)}
+  footer .wrap{display:flex;flex-direction:column;gap:6px}
+
+  /* Cargando simulador */
+  #loading{position:fixed;inset:0;background:var(--paper);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+  #loading.visible{opacity:1;visibility:visible}
+  #loading p{font-size:14px;color:var(--muted)}
+
+
+  /* Wordmark PILIBOT: mismo estilo que FIUNVA, contorno con barrido naranja-verde-azul */
+  .pili-wordmark{font-family:var(--dsp);font-style:italic;font-weight:700;fill:var(--logo-ink);stroke-width:5.5px;letter-spacing:0;stroke-linejoin:miter;stroke-miterlimit:4;paint-order:stroke fill;transition:fill .25s}
+
+  /* Fondo ambiental de la portada */
+  .hero{position:relative;isolation:isolate}
+  .hero::before{content:"";position:absolute;inset:-40px 0 auto;height:540px;z-index:-1;pointer-events:none;background:radial-gradient(40% 50% at 22% 40%,rgba(125,211,252,.28),transparent 70%),radial-gradient(38% 50% at 78% 35%,rgba(56,189,248,.20),transparent 70%),radial-gradient(34% 45% at 50% 68%,rgba(186,230,253,.30),transparent 70%);filter:blur(30px);animation:drift 18s ease-in-out infinite alternate}
+  @keyframes drift{to{transform:translate3d(0,24px,0) scale(1.06)}}
+
+
+
+
+  /* Paleta azul frío → blanco (barridos de borde e ilustraciones) */
+  :root{--i1:#0284c7;--i2:#38bdf8;--i3:#7dd3fc;--e1:#7dd3fc;--e2:#38bdf8;--e3:#0369a1;--glint:#22d3ee;--edge:linear-gradient(110deg,transparent 4%,var(--e1) 24%,var(--e2) 42%,var(--e3) 50%,var(--e2) 60%,var(--e1) 76%,transparent 96%)}
+  :root[data-theme="dark"]{--i1:#38bdf8;--i2:#bae6fd;--i3:#ffffff;--e1:#38bdf8;--e2:#bae6fd;--e3:#ffffff;--glint:#ffffff}
+  .tile.inv{--i1:#38bdf8;--i2:#bae6fd;--i3:#ffffff;--e1:#38bdf8;--e2:#bae6fd;--e3:#ffffff}
+  :root[data-theme="dark"] .tile.inv{--i1:#0284c7;--i2:#38bdf8;--i3:#7dd3fc;--e1:#7dd3fc;--e2:#38bdf8;--e3:#0369a1}
+
+  /* Barrido de luz solo en el borde al pasar el mouse */
+  :is(.tile,.spec,.btn,.chip,.add-media,#th,.media-item,.cbtn,.vid,.asm-card){position:relative;isolation:isolate}
+  :is(.tile,.spec,.btn,.chip,.add-media,#th,.media-item,.cbtn,.vid,.asm-card)::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:2px;background:var(--edge);background-size:250% 100%;background-position:130% 0;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;opacity:0;pointer-events:none;z-index:1;filter:drop-shadow(0 0 5px color-mix(in srgb,var(--e2) 70%,transparent));transition:opacity .3s}
+  :is(.tile,.spec,.btn,.chip,.add-media,#th,.media-item,.cbtn,.vid,.asm-card):hover::before,:is(.tile,.spec,.btn,.chip,.add-media,#th,.media-item,.cbtn,.vid,.asm-card):focus-visible::before{opacity:1;animation:sweep 1.8s linear infinite}
+  .media-item::before,.vid::before,.asm-card::before{inset:0}
+  @keyframes sweep{to{background-position:-30% 0}}
+
+  /* Ilustración 3D: vista explosionada en bucle + flujo de aire */
+  .art .fc{fill:var(--card)}
+  .art .fl{fill:color-mix(in srgb,var(--i2) 12%,var(--card))}
+  .art .fr{fill:color-mix(in srgb,var(--i2) 24%,var(--card))}
+  .ex{animation:ex 5.5s ease-in-out infinite}
+  .ex.t{--d:-46px} .ex.m{--d:-23px}
+  @keyframes ex{0%,15%{transform:translateY(0)}42%,68%{transform:translateY(var(--d))}95%,100%{transform:translateY(0)}}
+  .gd{animation:gd 5.5s ease-in-out infinite}
+  @keyframes gd{0%,15%{opacity:0}42%,68%{opacity:1}95%,100%{opacity:0}}
+  .flow{stroke-dasharray:5 9;animation:flow 1.4s linear infinite}
+  @keyframes flow{to{stroke-dashoffset:-28}}
+  .tile,.spec{border:1px solid color-mix(in srgb,var(--rule) 55%,transparent)}
+
+  /* Barra superior: wordmark + Powered by */
+  .brand{gap:14px}
+  .links{gap:22px}
+  #nav-logo{display:flex;line-height:0}
+  .bt{display:flex;flex-direction:column;gap:5px;line-height:1}
+  #nav-word{display:block;width:96px;line-height:0}
+  #nav-word svg{width:100%;height:auto;display:block}
+  .bt small{font-size:10px;font-weight:500;letter-spacing:0;color:var(--muted)}
+  nav.top::after{content:"";position:absolute;left:0;bottom:-1px;height:2px;width:var(--p,0%);background:linear-gradient(90deg,var(--i1),var(--i3));pointer-events:none}
+
+  /* Ilustración de control: señales, vectores y ángulos animados */
+  .art .tx{fill:var(--muted);stroke:none;font:600 9px var(--sans);text-anchor:middle}
+  .needle{transform-origin:40px 164px;animation:yaw 4.2s ease-in-out infinite}
+  @keyframes yaw{0%,100%{transform:rotate(-38deg)}50%{transform:rotate(52deg)}}
+  .pulse,.twk{animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.3}}
+  .draw{stroke-dasharray:1;animation:draw 4.5s ease-in-out infinite}
+  @keyframes draw{0%{stroke-dashoffset:1}45%,85%{stroke-dashoffset:0}100%{stroke-dashoffset:-1}}
+
+  /* Contenido ampliado */
+  .eyebrow{display:block;font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .display{font-size:clamp(26px,3.7vw,46px);line-height:1.04;font-weight:700;letter-spacing:-.04em}
+  .hero .eyebrow{margin-top:30px}
+  .hero .display{margin:22px 0 4px}
+  .hero .sub{max-width:900px;margin:26px auto 24px;color:var(--muted);font-size:21px;line-height:1.38;letter-spacing:-.016em}
+  .price{margin-bottom:18px;color:var(--muted)} .price b{color:var(--ink);font-weight:600}
+  .device{width:min(340px,82%);aspect-ratio:1.3;margin:48px auto 0;border-radius:30px;background:#0b0b0d;display:grid;place-items:center;box-shadow:0 30px 60px -30px rgba(0,0,0,.5)}
+  .device svg{width:78%;height:auto}
+  .eye{fill:#00e5ff;filter:drop-shadow(0 0 5px rgba(0,229,255,.7));transform-box:fill-box;transform-origin:center;animation:blinkeye 5s infinite}
+  @keyframes blinkeye{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+  .led{fill:#22c55e;animation:pulse 2s ease-in-out infinite}
+  .gt{background:linear-gradient(100deg,var(--i1),var(--i2),var(--i3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  section.inv{background:var(--ink);color:var(--paper);--i1:#38bdf8;--i2:#bae6fd;--i3:#ffffff}
+  :root[data-theme="dark"] section.inv{--i1:#0284c7;--i2:#38bdf8;--i3:#7dd3fc}
+  .statement{max-width:900px;margin:0 auto;text-align:center}
+  .statement h2{font-size:clamp(34px,6.4vw,76px);line-height:1.04;font-weight:700;letter-spacing:-.04em}
+  .statement p{margin:26px auto 0;max-width:680px;font-size:21px;line-height:1.4;color:color-mix(in srgb,var(--paper) 70%,transparent)}
+  .statement .eyebrow{color:color-mix(in srgb,var(--paper) 55%,transparent)}
+  .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:20px}
+  .bento .spec{grid-column:span 2;display:flex;flex-direction:column;gap:6px;padding:30px 32px}
+  .bento .w3{grid-column:span 3} .bento .w6{grid-column:span 6;flex-direction:row;align-items:center;justify-content:space-between;gap:30px}
+  .kick{font-size:12px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}
+  .big{font-size:clamp(40px,6vw,64px);line-height:1;font-weight:700;letter-spacing:-.04em;padding:6px 0;background:linear-gradient(120deg,var(--ink) 30%,var(--i1));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .bento .spec p{font-size:15px}
+  .split{display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center}
+  .stage svg{width:100%;height:auto;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+  .art .tx.l{text-anchor:start;font-size:10.5px}
+  .layers{list-style:none;display:grid;gap:24px}
+  .layers li{padding-left:18px;border-left:2px solid var(--i2)}
+  .layers h3{font-size:19px;font-weight:700;letter-spacing:-.02em}
+  .layers p{font-size:15px;color:var(--muted);margin-top:4px}
+  .states{display:flex;gap:34px;justify-content:center;flex-wrap:wrap;list-style:none;margin-bottom:44px}
+  .states li{position:relative;font:600 13px var(--mono);padding:12px 18px;border-radius:980px;border:1.5px solid var(--rule);color:var(--muted);animation:act 8s infinite}
+  .states li:not(:last-child)::after{content:"→";position:absolute;right:-24px;top:50%;transform:translateY(-52%);color:var(--muted)}
+  .states li:nth-child(2){animation-delay:2s}.states li:nth-child(3){animation-delay:4s}.states li:nth-child(4){animation-delay:6s}
+  @keyframes act{0%,22%{border-color:var(--i2);color:var(--ink);background:color-mix(in srgb,var(--i2) 14%,transparent)}30%,100%{border-color:var(--rule);color:var(--muted);background:transparent}}
+  .trio{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .pts{list-style:none;display:grid;gap:14px;margin-top:16px;font-size:16px;line-height:1.5;color:var(--muted)}
+  .pts b{color:var(--ink);font-weight:600}
+  .cmp{overflow-x:auto;border-radius:24px;border:1px solid var(--rule);background:var(--card)}
+  .cmp table{width:100%;border-collapse:collapse;min-width:680px;font-size:15px}
+  .cmp th,.cmp td{padding:18px 22px;text-align:left;border-bottom:1px solid var(--rule);color:var(--muted)}
+  .cmp tr:last-child td{border-bottom:0}
+  .cmp th{font-size:13px;font-weight:600}
+  .cmp td:first-child{font-weight:600;color:var(--ink)}
+  .cmp th:nth-child(3),.cmp td:nth-child(3){background:color-mix(in srgb,var(--i2) 11%,transparent);color:var(--ink);font-weight:600}
+
+  .pr{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:44px 36px}
+  .pr .big{font-size:clamp(44px,7vw,72px)}
+  .note{margin-top:22px;text-align:center;font-size:13px;color:var(--muted)}
+
+  .feat{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:40px;padding:44px 0;border-top:1px solid var(--rule)}
+  .feat h3{font-size:28px;line-height:1.1;font-weight:700;letter-spacing:-.03em}
+  .feat>div>p{margin-top:10px;color:var(--muted);font-size:16px;line-height:1.5}
+  .comp{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 32px}
+  .comp dt{font-weight:600;font-size:16px;letter-spacing:-.01em}
+  .comp dd{margin-top:2px;font-size:15px;line-height:1.45;color:var(--muted)}
+
+  /* Carrusel de portada: imagen central con la anterior y la siguiente a los lados */
+  .hero-car{position:relative;width:min(980px,100%);margin:14px auto 0;outline:none}
+  .hc-stage{position:relative;aspect-ratio:2/1;touch-action:pan-y}
+  .hc-stage::before{content:"";position:absolute;inset:6% 24% 12%;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--i2) 34%,transparent),transparent 74%);filter:blur(10px)}
+  .hc-stage::after{content:"";position:absolute;left:37%;right:37%;bottom:8%;height:6%;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.30),transparent);filter:blur(5px)}
+  .hc-slide{position:absolute;left:50%;top:0;width:50%;height:100%;margin:0 0 0 -25%;opacity:0;transform:scale(.4);filter:blur(6px);transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .5s ease,filter .5s ease;pointer-events:none;z-index:1}
+  .hc-slide[data-pos="0"]{opacity:1;transform:none;filter:none;z-index:3;pointer-events:auto}
+  .hc-slide[data-pos="-1"],.hc-slide[data-pos="1"]{opacity:.6;filter:blur(1.2px);z-index:2;pointer-events:auto;cursor:pointer}
+  .hc-slide[data-pos="-1"]{transform:translateX(-72%) scale(.62)}
+  .hc-slide[data-pos="1"]{transform:translateX(72%) scale(.62)}
+  .hc-slide[data-pos="-1"]:hover,.hc-slide[data-pos="1"]:hover{opacity:.9}
+  .hc-slide img{position:absolute;left:0;top:6%;width:100%;height:88%;object-fit:contain;object-position:center;user-select:none;filter:drop-shadow(0 20px 24px rgba(0,0,0,.28));transform:translate3d(calc(var(--px,0)*12px),calc(var(--py,0)*8px),0);transition:transform .3s ease,opacity .4s ease}
+  .hc-slide .ph{display:none}
+  .hc-slide .ph svg{width:62%;height:auto}
+  .hc-slide.missing img{display:none}.hc-slide.missing .ph{display:grid;place-items:center;width:100%;height:100%}
+  .cbtn{position:absolute;top:42%;z-index:3;width:44px;height:44px;border-radius:50%;border:1px solid var(--rule);background:color-mix(in srgb,var(--card) 82%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font-size:22px;line-height:1;cursor:pointer;opacity:0;transition:opacity .25s,transform .25s}
+  .cbtn.prev{left:0}.cbtn.next{right:0}
+  .hero-car:hover .cbtn,.cbtn:focus-visible{opacity:1}
+  .cbtn:hover{transform:scale(1.08)}
+  @media(hover:none){.cbtn{opacity:1}}
+  .hc-foot{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:6px}
+  .hc-dots{display:flex;gap:8px}
+  .hc-dots button{width:8px;height:8px;border:0;border-radius:99px;background:var(--rule);cursor:pointer;padding:0;transition:width .4s cubic-bezier(.2,.7,.2,1),background .3s}
+  .hc-dots button.on{width:30px;background:var(--ink)}
+
+  /* Video */
+  .vid{position:relative;aspect-ratio:var(--ar,1.7778);width:min(100%,calc(78vh*var(--ar,1.7778)));margin:0 auto;border-radius:28px;overflow:hidden;background:#0b0b0d}
+  .vid video{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;background:#000}
+  .vid-ph{position:absolute;inset:0;z-index:1;display:grid;place-content:center;justify-items:center;gap:10px;text-align:center;color:#a1a1a6;background:radial-gradient(60% 70% at 50% 40%,#16222b,#0b0b0d);pointer-events:none}
+  .vid-ph svg{width:56px;height:56px;fill:none;stroke:#bae6fd;stroke-width:1.5}
+  .vid-ph b{color:#f5f5f7;font-weight:600;font-size:17px}
+  .vid-ph span{font:12px var(--mono)}
+  .vid.ready .vid-ph{display:none}
+
+  /* Facilidad de ensamble: carrusel horizontal por pasos */
+  .pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;margin-bottom:52px}
+  .pillars h3{font-size:19px;font-weight:700;letter-spacing:-.02em;margin-top:6px}
+  .pillars p{margin-top:6px;font-size:15px;line-height:1.5;color:var(--muted)}
+  .asm-track{display:flex;gap:20px;overflow-x:auto;padding-right:26%;scroll-snap-type:x mandatory;scrollbar-width:none;outline:none;-webkit-overflow-scrolling:touch}
+  .asm-track::-webkit-scrollbar{display:none}
+  .asm-card{flex:0 0 min(74%,700px);scroll-snap-align:start;border-radius:28px;background:var(--card);border:1px solid color-mix(in srgb,var(--rule) 55%,transparent);overflow:hidden;opacity:.45;transform:scale(.965);transition:opacity .55s,transform .55s cubic-bezier(.2,.7,.2,1)}
+  .asm-card.on{opacity:1;transform:none}
+  .asm-img{position:relative;aspect-ratio:16/10;display:grid;place-items:center;background:radial-gradient(70% 80% at 50% 40%,color-mix(in srgb,var(--i2) 16%,var(--alt)),var(--alt))}
+  .asm-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .asm-img .ph{display:none;width:34%}.asm-img .ph svg{width:100%;height:auto}
+  .asm-card.missing .ph{display:block}
+  .asm-img img.alpha{object-fit:contain;padding:6%;box-sizing:border-box}
+  .asm-card.missing img{display:none}
+  .asm-txt{padding:26px 30px 30px}
+  .asm-txt .num{font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .asm-txt h3{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:6px 0 8px}
+  .asm-txt p{font-size:15px;line-height:1.5;color:var(--muted)}
+  .asm-bar{display:flex;align-items:center;gap:22px;margin-top:26px}
+  .asm-prog{display:flex;gap:8px;flex:1}
+  .seg{position:relative;flex:1;height:22px;border:0;background:none;cursor:pointer;padding:0}
+  .seg::before{content:"";position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;background:var(--rule)}
+  .seg i{position:absolute;left:0;right:0;top:50%;height:3px;margin-top:-1.5px;border-radius:2px;transform:scaleX(0);transform-origin:left;background:linear-gradient(90deg,var(--i1),var(--i3))}
+  .seg.done i{transform:scaleX(1)}
+  .seg.on i{animation:fill var(--ms,3s) linear forwards}
+  @keyframes fill{to{transform:scaleX(1)}}
+  .asm:hover .seg.on i,.asm.off .seg.on i{animation-play-state:paused}
+  .asm-ctl{display:flex;align-items:center;gap:12px}
+  .asm-ctl span{font:600 13px var(--mono);color:var(--muted);min-width:64px;text-align:right}
+  .asm-ctl .cbtn{position:static;opacity:1;width:40px;height:40px;font-size:20px}
+  @media(prefers-reduced-motion:reduce){.seg.on i{transform:scaleX(1)}}
+  .bento .big{font-size:clamp(28px,3.4vw,42px)}
+
+  .media-item.ready .vid-ph{display:none}
+  .media-item .ph{display:none}
+  .media-item.missing img{display:none}
+  .media-item.missing .ph{display:grid;place-items:center;position:absolute;inset:0}
+  .media-item .ph svg{width:40%;height:auto}
+  /* Imágenes con ajuste automático: aparecen al terminar de procesarse */
+  .sm{opacity:0;transition:opacity .5s ease}
+  .sm.ready{opacity:1}
+
+
+  .tile,.spec{transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s}
+  .tile:hover,.spec:hover{transform:translateY(-3px);box-shadow:0 22px 44px -26px color-mix(in srgb,var(--e2) 65%,transparent)}
+  .btn{transition:background .2s,color .2s,filter .2s,transform .2s}
+  .btn:active,.cbtn:active{transform:scale(.97)}
+  .pili-glint{font-family:var(--dsp);font-style:italic;font-weight:700;fill:none;stroke-width:5.5px;letter-spacing:0;stroke-linejoin:miter;stroke-miterlimit:4;pointer-events:none}
+  .media-item{aspect-ratio:auto;display:flex;flex-direction:column}
+  .mi-img{position:relative;aspect-ratio:16/10;background:radial-gradient(70% 80% at 50% 40%,color-mix(in srgb,var(--i2) 14%,var(--alt)),var(--alt))}
+  .mi-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .mi-img img.alpha{object-fit:contain;padding:5%;box-sizing:border-box}
+  .media-item.missing .mi-img .ph{display:grid;place-items:center;position:absolute;inset:0}
+  .media-caption{position:static;padding:14px 18px 18px;color:var(--ink);background:none}
+  .media-caption b{display:block;font-size:15px;font-weight:700;letter-spacing:-.01em}
+  .media-caption span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-top:3px;font-size:13px;line-height:1.4;color:var(--muted)}
+  footer .wrap.foot{flex-direction:row;align-items:center;justify-content:space-between;gap:36px}
+  .foot-logo{flex:0 0 auto;line-height:0}
+  .foot-info{display:flex;flex-direction:column;align-items:flex-start;gap:12px;text-align:left}
+
+  /* En acción: dos videos al mismo alto, el segundo rellena el ancho restante */
+  .act{--vh:clamp(220px,28vw,340px);display:flex;flex-wrap:wrap;gap:20px;align-items:stretch;max-width:none;width:fit-content;margin:0 auto}
+  .act .vid{width:auto;margin:0;height:var(--vh);aspect-ratio:var(--ar,1.7778);flex:0 0 auto;max-width:90%}
+  .act .vid-fill{width:auto;margin:0;height:var(--vh);aspect-ratio:var(--ar,16/9);flex:0 0 auto;min-width:0}
+
+  /* Visión artificial */
+  .legend{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:12px 30px;margin:-18px 0 38px;font-size:15px;color:var(--muted)}
+  .legend li{display:flex;align-items:center;gap:8px}
+  .legend b{color:var(--ink);font-weight:600}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:50%}
+  .legend .c1{background:#2563eb}.legend .c2{background:#ef4444}.legend .c3{background:#22c55e}
+  .vis{--ar:1.7778;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  .vf{margin:0}
+  .vis .vid{width:100%;margin:0;border-radius:24px;cursor:pointer}
+  .vis .vid video{object-fit:contain}
+  .vf figcaption{padding:16px 4px 0}
+  .vf figcaption b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em}
+  .vf figcaption span{display:block;margin-top:3px;font-size:15px;line-height:1.45;color:var(--muted)}
+
+    /* VA0: mismo alto que V3, ancho proporcional, sin recortes */
+    .act .vid-fill video{object-fit:contain}
+
+  /* Símbolos animados de «Para qué sirve» */
+  .ico{width:132px;height:99px;margin-bottom:18px}
+  .ico svg{width:100%;height:100%;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;overflow:visible}
+  .ico .soft{stroke:var(--muted);opacity:.5;stroke-width:1.3}
+  .ico .dash{stroke-dasharray:4 5}
+  .swing{transform-origin:102px 32px;animation:swing 2.4s ease-in-out infinite}
+  @keyframes swing{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+  .spin{transform-origin:46px 62px;animation:spin 5s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .foot-info small{font-size:12px;color:var(--muted)}
+    .foot-powered{font-size:14px;font-weight:700;letter-spacing:.08em;color:#0066cc;margin:0;text-align:left}
+    [data-theme="dark"] .foot-powered{color:#4da6ff}
+
+  @media(max-width:860px){
+    .links{display:none}
+    .bento .spec,.bento .w3,.bento .w6{grid-column:span 6}.bento .w6{flex-direction:column;align-items:flex-start}
+    .act .vid{width:100%;height:auto}.act .vid-fill{aspect-ratio:16/9;flex-basis:100%}
+    .vis{grid-template-columns:1fr}
+    footer .wrap.foot{flex-direction:column;align-items:flex-start}.foot-info{align-items:flex-start;text-align:left}
+    .pillars{grid-template-columns:1fr;gap:22px}.asm-card{flex-basis:86%}.asm-track{padding-right:14%}
+    .feat,.comp{grid-template-columns:1fr}.feat{gap:24px;padding:32px 0}
+    .split,.trio{grid-template-columns:1fr}.split{gap:32px}
+    .tiles,.specs{grid-template-columns:1fr}
+    .stats{grid-template-columns:repeat(2,1fr);row-gap:32px}
+    .tile{min-height:0;padding:36px 24px 32px}
+    section.block{padding:72px 0}
+    .hero{padding:28px 22px 56px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    html{scroll-behavior:auto}
+    body:not(.loaded) .hero>*{opacity:1;transform:none}
+  }
+
+  /* CAD Intro Animation (from FIUNVA.html Mode 1) */
+  .cad-container{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:10}
+  .cad-lockup-svg{width:310px;height:auto;overflow:visible}
+  .cad-stroke-cyan{fill:transparent;stroke:var(--cf);stroke-width:3.5;stroke-dasharray:1400;stroke-dashoffset:1400;animation:cadDrawCyan 1.7s cubic-bezier(0.77,0,0.175,1) forwards}
+  .cad-stroke-ink{fill:transparent;stroke:var(--logo-ink);stroke-width:3.5;stroke-dasharray:1400;stroke-dashoffset:1400;animation:cadDrawInk 1.7s cubic-bezier(0.77,0,0.175,1) 0.25s forwards}
+  @keyframes cadDrawCyan{0%{stroke-dashoffset:1400;fill:transparent}68%{stroke-dashoffset:0;fill:transparent}100%{stroke-dashoffset:0;fill:#00D6EB;stroke-width:0}}
+  @keyframes cadDrawInk{0%{stroke-dashoffset:1400;fill:transparent}68%{stroke-dashoffset:0;fill:transparent}100%{stroke-dashoffset:0;fill:var(--logo-ink);stroke-width:0}}
+  .cad-wordmark-anim{opacity:0;transform:translateY(24px);animation:cadWordmarkSnap 0.65s cubic-bezier(0.16,1,0.3,1) 1.25s forwards}
+  @keyframes cadWordmarkSnap{to{opacity:1;transform:translateY(0)}}
+  .fiunva-svg-wordmark{font-family:var(--dsp);font-style:italic;font-weight:800;fill:var(--logo-ink);stroke:var(--cf);stroke-width:7.5px;stroke-linejoin:miter;paint-order:stroke fill;letter-spacing:0.03em;transition:fill .25s ease,stroke .25s ease}
+</style>
+</head>
+<body>
+  <div id="splash" role="dialog" aria-label="Cargando PILIBOT Hub">
+    <div id="splash-logo"></div>
+  </div>
+
+  <nav class="top" aria-label="Principal">
+    <div class="wrap">
+      <a class="brand" href="#top" id="top-brand" aria-label="PILIBOT, inicio"><span id="nav-logo"></span><span class="bt"><span id="nav-word"></span><small class="nav-powered">POWERED BY FIUNVA</small></span></a>
+      <div class="links">
+        <a href="#simuladores">Simuladores</a>
+        <a href="#accion">En acción</a>
+        <a href="#especificaciones">Especificaciones</a>
+        <a href="#ensamble">Ensamble</a>
+        <a href="#caracteristicas">Características</a>
+        <a href="#vision">Visión</a>
+        <a href="#precios">Preventa</a>
+      </div>
+      <button id="th" aria-label="Cambiar tema" onclick="toggleTheme()">◐</button>
+    </div>
+  </nav>
+
+  <main id="top">
+    <header class="wrap hero">
+      <h1 id="pili-wordmark" aria-label="PILIBOT"></h1>
+      <h2 class="display">Robótica adaptativa y colaborativa,<br><span class="gt">al alcance de todos.</span></h2>
+      <div class="hero-car" id="hero-car" tabindex="0" role="region" aria-roledescription="carrusel" aria-label="Fotos de PILIBOT">
+        <div class="hc-stage" id="hc-stage"></div>
+        <button class="cbtn prev" id="hc-prev" aria-label="Foto anterior">‹</button>
+        <button class="cbtn next" id="hc-next" aria-label="Foto siguiente">›</button>
+        <div class="hc-foot"><div class="hc-dots" id="hc-dots"></div></div>
+      </div>
+      <p class="sub">Minirobots autónomos de bajo costo, con arquitectura electrónica, mecánica y de software propia para experimenar con control, visión y navegación en un tablero real.</p>
+      <div class="row">
+        <a class="btn btn-primary" href="#simuladores">Probar simuladores</a>
+        <a class="btn" href="#especificaciones">Ver especificaciones</a>
+      </div>
+    </header>
+
+
+    <section class="block alt" id="simuladores" aria-labelledby="sim-title">
+      <div class="wrap">
+        <div class="head">
+          <span class="eyebrow">Pruébalo tú mismo</span>
+          <h2 id="sim-title">Simuladores.</h2>
+          <p>Dos entornos interactivos para modelar, simular y experimentar con el PILIBOT.</p>
+        </div>
+        <div class="tiles">
+          <article class="tile">
+            <h3>Simulador 3D</h3>
+            <span class="kicker">Modelo 3D · Interactivo · Planos y Diagramas</span>
+            <div class="art" aria-hidden="true">
+              <svg viewBox="0 0 260 210" aria-hidden="true">
+              <defs>
+                <linearGradient id="ga" gradientUnits="userSpaceOnUse" x1="40" y1="0" x2="220" y2="0"><stop offset="0" style="stop-color:var(--i1)"/><stop offset=".55" style="stop-color:var(--i2)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient>
+                <radialGradient id="gh" cx=".35" cy=".55" r=".6"><stop offset="0" style="stop-color:var(--i2);stop-opacity:.7"/><stop offset="1" style="stop-color:var(--i2);stop-opacity:0"/></radialGradient>
+              </defs>
+              <path class="soft flow" d="M4 96C44 96 80 12 130 12S216 96 256 96"/>
+              <path class="soft flow" d="M22 70C58 70 86 28 130 28S202 70 238 70"/>
+              <path class="soft dash gd" d="M60 153V71M200 153V71M130 188V106"/>
+              <g stroke="url(#ga)">
+                <g transform="translate(0,118)">
+                  <path class="fl" d="M60 35 130 70V84L60 49Z"/><path class="fr" d="M130 70 200 35V49L130 84Z"/>
+                  <path class="fc" d="M130 0 200 35 130 70 60 35Z"/>
+                  <path fill="url(#gh)" stroke="none" d="M130 0 200 35 130 70 60 35Z"/>
+                  <path class="soft" stroke-width=".9" d="M147.5 8.75 77.5 43.75M165 17.5 95 52.5M182.5 26.25 112.5 61.25M112.5 8.75 182.5 43.75M95 17.5 165 52.5M77.5 26.25 147.5 61.25"/>
+                </g>
+                <g class="ex m"><g transform="translate(0,100)">
+                  <path class="fl" d="M60 35 130 70V84L60 49Z"/><path class="fr" d="M130 70 200 35V49L130 84Z"/>
+                  <path class="fc" d="M130 0 200 35 130 70 60 35Z"/>
+                  <path d="M130 17.5 165 35 130 52.5 95 35ZM130 0v17.5M200 35h-35M130 70V52.5M60 35h35"/>
+                </g></g>
+                <g class="ex t"><g transform="translate(0,82)">
+                  <path class="fl" d="M60 35 130 70V84L60 49Z"/><path class="fr" d="M130 70 200 35V49L130 84Z"/>
+                  <path class="fc" d="M130 0 200 35 130 70 60 35Z"/>
+                  <ellipse cx="130" cy="35" rx="20" ry="10"/><circle cx="130" cy="35" r="2.5" fill="url(#ga)"/>
+                </g></g>
+              </g>
+            </svg>
+            </div>
+            <p>Prueba el gemelo digital del PILIBOT en 3D. Cinemática real, análisis aerodinamico y estructural con todo el hardware electrónico y mecanico.</p>
+            <div class="row">
+              <button class="btn btn-primary" onclick="launchSimulator('sim3d', true)">Abrir en pestaña nueva</button>
+              <button class="btn" onclick="launchSimulator('sim3d', false)">Abrir aquí</button>
+            </div>
+          </article>
+          <article class="tile inv">
+            <h3>Simulador de control</h3>
+            <span class="kicker">Sistema de control · Análisis matemático · Documentación</span>
+            <div class="art" aria-hidden="true">
+              <svg viewBox="0 0 280 200" aria-hidden="true">
+              <defs><linearGradient id="gb" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="280" y2="0"><stop offset="0" style="stop-color:var(--i1)"/><stop offset=".55" style="stop-color:var(--i2)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient></defs>
+              <rect class="soft" x="8" y="8" width="118" height="118" rx="10"/>
+              <path class="soft" stroke-width=".7" d="M37 8v118M67 8v118M96 8v118M8 37h118M8 67h118M8 96h118"/>
+              <path id="trj" stroke="url(#gb)" d="M30 112V72Q30 50 52 50H104"/>
+              <text class="tx" x="46" y="90">θ 90°</text>
+              <path fill="url(#gb)" stroke="none" d="M-6-4 7 0-6 4Z"><animateMotion dur="5s" repeatCount="indefinite" rotate="auto"><mpath href="#trj"/></animateMotion></path>
+              <text class="tx" x="143" y="30">r</text><text class="tx" x="270" y="30">y</text>
+              <path stroke="url(#gb)" d="M140 36H156M153 33l3 3-3 3M172 36H190M187 33l3 3-3 3M212 36H226M223 33l3 3-3 3M252 36H272M269 33l3 3-3 3"/>
+              <circle stroke="url(#gb)" cx="164" cy="36" r="8"/><text class="tx" x="164" y="39.5" font-size="10">Σ</text>
+              <rect stroke="url(#gb)" x="190" y="26" width="22" height="20" rx="4"/><text class="tx" x="201" y="39.5" font-size="10">K</text>
+              <rect stroke="url(#gb)" x="226" y="26" width="26" height="20" rx="4"/><text class="tx" x="239" y="39.5" font-size="10">G</text>
+              <path class="soft flow" d="M262 36V60H164V44"/><path stroke="url(#gb)" d="M160 50l4-6 4 6"/>
+              <circle r="2.4" fill="url(#gb)" stroke="none"><animateMotion dur="2.6s" repeatCount="indefinite" path="M140 36H272"/></circle>
+              <path class="soft" d="M146 126V76M146 126H270"/><path class="soft dash" d="M146 92H270"/>
+              <path id="rsp" class="draw" pathLength="1" stroke="url(#gb)" d="M146 126C158 126 160 76 178 82S196 94 210 92S240 92 270 92"/>
+              <circle r="2.6" fill="url(#gb)" stroke="none"><animateMotion dur="4.5s" repeatCount="indefinite" keyPoints="0;1;1" keyTimes="0;.45;1" calcMode="linear"><mpath href="#rsp"/></animateMotion></circle>
+              <circle class="soft" cx="40" cy="164" r="26"/><path class="soft" stroke-width=".9" d="M40 138v5M66 164h-5M40 190v-5M14 164h5"/>
+              <g class="needle"><path stroke="url(#gb)" d="M40 164V147"/><path fill="url(#gb)" stroke="none" d="M40 142l-3.5 7h7z"/></g><circle cx="40" cy="164" r="2.5" fill="url(#gb)" stroke="none"/>
+              <path class="soft" d="M100 164H160M130 190V138"/><path class="soft dash" d="M158 164V144M130 144H158"/>
+              <g class="pulse"><path stroke="url(#gb)" d="M130 164 158 144M154.3 151 158 144 150.3 145.3"/></g>
+              <path stroke="url(#gb)" stroke-width="1.4" d="M146 164A16 16 0 0 0 143 154.7"/><text class="tx" x="152" y="161">α</text>
+              <circle class="soft" cx="230" cy="164" r="18"/><path class="soft" d="M230 156v16M222 164h16"/>
+              <g fill="url(#gb)" stroke="none"><circle class="twk" cx="222" cy="158" r="1.8"/><circle class="twk" style="animation-delay:-.4s" cx="236" cy="170" r="1.8"/><circle class="twk" style="animation-delay:-.8s" cx="228" cy="173" r="1.8"/><circle class="twk" style="animation-delay:-1.2s" cx="240" cy="160" r="1.8"/><circle class="twk" style="animation-delay:-1.6s" cx="218" cy="168" r="1.8"/><circle class="twk" style="animation-delay:-2s" cx="233" cy="155" r="1.8"/><circle class="twk" style="animation-delay:-.6s" cx="245" cy="168" r="1.8"/></g>
+            </svg>
+            </div>
+            <p>Plano experimental a escala con editor de terrenos, Análisis matemático del sistema de control diseñado en base a datos experimentales reales.</p>
+            <div class="row">
+              <button class="btn btn-primary" onclick="launchSimulator('simam', true)">Abrir en pestaña nueva</button>
+              <button class="btn" onclick="launchSimulator('simam', false)">Abrir aquí</button>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="accion" aria-labelledby="vid-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">En acción</span><h2 id="vid-title">PILIBOT en funcionamiento.</h2>
+          <p>El robot operando sobre una superficie real, tal como lo ves en los simuladores.</p></div>
+        <div class="act">
+          <div class="vid" id="vid"><video id="pv" muted loop playsinline preload="metadata" controls></video><div class="vid-ph"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="26"/><path d="M23 19l15 9-15 9z"/></svg><b>Video de funcionamiento</b><span></span></div></div>
+          <div class="vid vid-fill" id="vid2"><video id="pv2" muted loop playsinline preload="metadata" controls></video><div class="vid-ph"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="26"/><path d="M23 19l15 9-15 9z"/></svg><b>Video VA1</b><span></span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block alt" id="especificaciones" aria-labelledby="info-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Especificaciones</span><h2 id="info-title">Ingeniería concentrada en un espacio de 66 X 55 mm.</h2>
+          <p>La medida corresponde al área que de PILIBOT ocupa sobre la superficie de trabajo. Dentro de ese espacio esta toda la arquitectura electronica y mecanica integrada.</p></div>
+        <div class="bento">
+          <article class="spec"><span class="kick">Microprocesador</span><span class="big">ESP32-C3</span><p>SuperMini con núcleo RISC-V a 3.3 V y 4 MB de Flash. Ejecuta el control híbrido y las tareas de FreeRTOS.</p></article>
+          <article class="spec"><span class="kick">Orientación</span><span class="big">MPU6050</span><p>IMU de 6 ejes que entrega la orientación del robot en Yaw, Pitch y Roll.</p></article>
+          <article class="spec"><span class="kick">Interfaz interactiva</span><span class="big">OLED 1.3″</span><p>Pantalla en el bus I2C compartido para mostrar estados y expresiones del robot.</p></article>
+          <article class="spec"><span class="kick">Autonomía</span><span class="big">&gt; 3 h</span><p>Doble celda LiPo 2S (3.7 V, 650 mAh) con conversor Step-Down y monitoreo continuo del voltaje de batería.</p></article>
+          <article class="spec"><span class="kick">Tracción diferencial</span><span class="big">200 RPM</span><p>Dos micromotores N20 metálicos con puente H DRV8833: control de velocidad y fuerza para empujar cubos de 70 × 70 mm.</p></article>
+          <article class="spec"><span class="kick">Conectividad</span><span class="big">BLE 5.0</span><p>Enlace directo de 20–40 mA con pila NimBLE por sondeo (polling): baja latencia y sin calentamiento apreciable.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="ensamble" aria-labelledby="asm-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Facilidad de ensamble</span><h2 id="asm-title">Un robot modular, <span class="gt">armado por capas.</span></h2>
+          <p>PILIBOT se arma como un sándwich: placas y módulos que se apilan y se conectan, tanto en lo electrónico como en lo mecánico. Cada capa tiene una función definida, de modo que armarlo, entenderlo y modificarlo resulta directo.</p></div>
+        <div class="pillars">
+          <div><span class="kick">Modularidad electrónica</span><h3>Una función por placa.</h3><p>Energía, lógica y sensado viven en placas y módulos independientes, comunicados por un bus I2C compartido.</p></div>
+          <div><span class="kick">Modularidad mecánica</span><h3>Piezas que se acoplan.</h3><p>La carcasa de MDF de 3 mm, los motores N20 y la tapa son piezas separadas que se acoplan entre sí.</p></div>
+          <div><span class="kick">Arquitectura sándwich</span><h3>Energía abajo, lógica arriba.</h3><p>Dos PCBs de 5.5 × 4 cm se apilan dentro del chasis, una sobre otra.</p></div>
+        </div>
+        <div class="asm" id="asm" role="region" aria-roledescription="carrusel" aria-label="Pasos de ensamble">
+          <div class="asm-track" id="asm-track" tabindex="0"></div>
+          <div class="asm-bar"><div class="asm-prog" id="asm-prog"></div>
+            <div class="asm-ctl"><span id="asm-count">01 / 05</span><button class="cbtn" id="asm-prev" aria-label="Paso anterior">‹</button><button class="cbtn" id="asm-next" aria-label="Paso siguiente">›</button></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block alt" id="caracteristicas" aria-labelledby="car-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Características</span><h2 id="car-title">Electrónica, mecánica y software base.</h2>
+          <p>Una plataforma pensada para que equipos pequeños desarrollen y prueben robótica adaptativa y colaborativa sobre hardware propio.</p></div>
+        <div class="feat"><div><h3>Arquitectura electrónica</h3><p>Dos PCBs separan la energía de la lógica y la actuación, con un bus I2C compartido.</p></div><dl class="comp"><div><dt>ESP32-C3 SuperMini</dt><dd>Microcontrolador RISC-V a 3.3 V con 4 MB de Flash.</dd></div><div><dt>DRV8833</dt><dd>Puente H para los dos motores N20.</dd></div><div><dt>MPU6050</dt><dd>IMU de 6 ejes para orientación en Yaw, Pitch y Roll.</dd></div><div><dt>VL53L0X / VL6180X</dt><dd>Sensor láser de proximidad ToF.</dd></div><div><dt>OLED de 1.3″</dt><dd>Pantalla en el bus I2C compartido.</dd></div><div><dt>LiPo 2S + BMS</dt><dd>3.7 V, 650 mAh, con protección 2S de 10 A.</dd></div><div><dt>Step-Down Mini 560 y 3.3 V</dt><dd>Conversión y regulación, con divisor resistivo para leer la batería.</dd></div><div><dt>BLE 5.0 (NimBLE)</dt><dd>Enlace de 20–40 mA con atención por sondeo (polling).</dd></div></dl></div>
+        <div class="feat"><div><h3>Arquitectura mecánica</h3><p>Huella de 66 X 55 mm con la electrónica en dos placas apiladas.</p></div><dl class="comp"><div><dt>Carcasa de MDF</dt><dd>Estructura ligera de 3 mm.</dd></div><div><dt>Tracción diferencial</dt><dd>Dos micromotores reductores N20 metálicos a 200 RPM.</dd></div><div><dt>PCBs apiladas</dt><dd>Dos placas de 5.5 × 4 cm: energía abajo, lógica y actuación arriba.</dd></div><div><dt>Carga magnética</dt><dd>Conectores bipolares que se acoplan al centro de recarga.</dd></div><div><dt>Centro de carga</dt><dd>En el sistema completo, 5 bahías con transistores Darlington TIP142T y fuente de 12 V / 10 A.</dd></div><div><dt>Empuje de carga</dt><dd>Fuerza suficiente para mover cubos de 70 × 70 mm.</dd></div></dl></div>
+        <div class="feat"><div><h3>Software base</h3><p>Firmware, control y herramientas para programar y observar a los robots.</p></div><dl class="comp"><div><dt>FreeRTOS</dt><dd>Tareas desacopladas y timeouts de 50 ms en I2C para que un sensor no bloquee el BLE.</dd></div><div><dt>Control híbrido</dt><dd>Supervisor de estados (INICIO, CRUCERO, DESACELERACIÓN, CONVERGENCIA) con leyes proporcionales a 100 Hz nominales.</dd></div><div><dt>Sin encoders</dt><dd>Desaceleración adaptativa y refuerzo anti-estancamiento del PWM (+2 % a +6 %).</dd></div><div><dt>Visión cenital</dt><dd>Vision3.py: rectificación de ojo de pez, calibración con ArUco y seguimiento con filtro de Kalman.</dd></div><div><dt>App web / PWA</dt><dd>Visualización 3D de Yaw, Pitch y Roll y planificador de secuencias con eventos ACK, RUN y DONE.</dd></div><div><dt>Simuladores</dt><dd>Simulador 3D y simulador de control para validar antes de pasar al hardware.</dd></div></dl></div>
+      </div>
+    </section>
+
+    <section class="block" id="vision" aria-labelledby="vis-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Visión artificial</span><h2 id="vis-title">Detección, trazado y <span class="gt">seguimiento de trayectorias.</span></h2>
+          <p>Una cámara ubicada en la parte superior del escenario de prueba detecta a cada robot y dibuja su recorrido sobre el tablero. El color de la traza indica en qué fase del movimiento va.</p></div>
+        <ul class="legend" aria-label="Código de colores de la trayectoria">
+          <li><i class="c1"></i><b>Azul</b> avance hacia el cubo</li>
+          <li><i class="c2"></i><b>Rojo</b> impacto y empuje</li>
+          <li><i class="c3"></i><b>Verde</b> alejamiento</li>
+        </ul>
+        <div class="vis" id="vis-grid"></div>
+      </div>
+    </section>
+
+    <section class="block alt" id="precios" aria-labelledby="pre-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Preventa próxima a salir</span><h2 id="pre-title">Precios de preventa.</h2></div>
+        <div class="specs">
+          <article class="spec pr"><span class="kick">PILIBOT individual</span><span class="big">$2,499 MXN</span><p>Un PILIBOT con su centro de recarga individual.</p></article>
+          <article class="spec pr"><span class="kick">Sistema completo</span><span class="big">$14,999 MXN</span><p>5 PILIBOTs y un centro de carga de 5 bahías.</p></article>
+        </div>
+        <p class="note" style="max-width:860px;margin:22px auto 0">Precios de preventa en pesos mexicanos, sujetos a cambio. Se fijaron con base en los costos de desarrollo del proyecto previos a junio de 2026, y pueden subir si cambian los costos de componentes, fabricación o logística.</p>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="imp-title">
+      <div class="wrap">
+        <div class="head"><span class="eyebrow">Aplicaciones</span><h2 id="imp-title">Para qué sirve.</h2></div>
+        <div class="trio">
+          <article class="spec"><div class="ico" aria-hidden="true"><svg viewBox="0 0 120 90"><defs><linearGradient id="gi1" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="0"><stop offset="0" style="stop-color:var(--i1)"/><stop offset=".55" style="stop-color:var(--i2)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient></defs>
+            <g stroke="url(#gi1)"><path d="M60 16 102 32 60 48 18 32Z"/><path d="M36 41v16c0 7 48 7 48 0V41"/>
+            <g class="swing"><path d="M102 32V54"/><circle cx="102" cy="57" r="3" fill="url(#gi1)"/></g></g>
+            <g fill="url(#gi1)" stroke="none"><circle class="twk" cx="22" cy="12" r="1.8"/><circle class="twk" style="animation-delay:-.8s" cx="104" cy="12" r="1.8"/><circle class="twk" style="animation-delay:-1.6s" cx="14" cy="62" r="1.8"/></g></svg></div><h3>Docencia e investigación</h3><p>Probar controladores, visión y planificación en hardware real, con la fricción y el ruido que una simulación no incluye.</p></article>
+          <article class="spec"><div class="ico" aria-hidden="true"><svg viewBox="0 0 120 90"><defs><linearGradient id="gi2" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="0"><stop offset="0" style="stop-color:var(--i1)"/><stop offset=".55" style="stop-color:var(--i2)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient></defs>
+            <g stroke="url(#gi2)"><rect x="8" y="8" width="24" height="14" rx="3"/><rect x="48" y="8" width="24" height="14" rx="3"/><rect x="88" y="8" width="24" height="14" rx="3"/><rect x="48" y="50" width="24" height="14" rx="3"/><rect x="88" y="50" width="24" height="14" rx="3"/></g>
+            <path id="rt" class="soft flow" d="M14 36H108V76H14Z"/>
+            <g class="pulse" stroke="url(#gi2)"><path d="M8 52l-4 8h6l-3 8"/></g>
+            <rect x="-4" y="-4" width="8" height="8" rx="2" fill="url(#gi2)" stroke="none"><animateMotion dur="6s" repeatCount="indefinite" rotate="auto"><mpath href="#rt"/></animateMotion></rect></svg></div><h3>Logística a escala</h3><p>Probar anchos de pasillo, radios de giro y estaciones de carga en un tablero antes de reorganizar un almacén real.</p></article>
+          <article class="spec"><div class="ico" aria-hidden="true"><svg viewBox="0 0 120 90"><defs><linearGradient id="gi3" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="120" y2="0"><stop offset="0" style="stop-color:var(--i1)"/><stop offset=".55" style="stop-color:var(--i2)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient></defs>
+            <circle class="soft dash pulse" cx="46" cy="60" r="29"/>
+            <g stroke="url(#gi3)"><circle cx="46" cy="12" r="5.5"/><path d="M46 20V44H66l8 16h8"/><circle cx="46" cy="62" r="20"/>
+            <g class="spin"><path d="M46 44v36M28 62h36"/></g></g>
+            <circle cx="46" cy="62" r="2.5" fill="url(#gi3)" stroke="none"/>
+            <path class="soft flow" d="M92 78h20M107 73l5 5-5 5"/></svg></div><h3>Accesibilidad</h3><p>Usar la cinemática diferencial y los márgenes de colisión para estudiar espacios aptos para sillas de ruedas.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="block alt" id="galeria" aria-labelledby="media-title">
+      <div class="wrap">
+        <div class="head">
+          <h2 id="media-title">Galería.</h2>
+          <p>Fotos del robot y de su proceso de ensamble.</p>
+        </div>
+        
+        <!-- Hero photos -->
+        <h3 style="font-size:18px;font-weight:700;margin:32px 0 16px">Fotos del robot</h3>
+        <div class="media-grid" id="gallery-hero"></div>
+        
+        <!-- Assembly photos -->
+        <h3 style="font-size:18px;font-weight:700;margin:48px 0 16px">Ensamble</h3>
+        <div class="media-grid" id="gallery-assembly"></div>
+        
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div class="foot-logo" id="footer-logo" role="img" aria-label="FIUNVA"></div>
+      <div class="foot-info">
+        <nav class="flinks" aria-label="Enlaces del proyecto">
+          <a href="SIM3D/index.html" target="_blank" rel="noopener">Simulador 3D</a>
+          <a href="SIMAM/index.html" target="_blank" rel="noopener">Simulador de control</a>
+          <a href="https://fiunva.my.canva.site/" target="_blank" rel="noopener">Más de FIUNVA</a>
+        </nav>
+        <p>Powered by FIUNVA</p>
+        <small>Noviembre 2026</small>
+        <small>Proyecto desarrollado por Alejandro Aguirre Díaz</small>
+      </div>
+    </div>
+  </footer>
+
+  <div id="loading" role="dialog" aria-modal="true" aria-label="Cargando simulador">
+    <div id="loader-logo"></div>
+    <div class="bar"><i id="loader-bar"></i></div>
+    <p id="loader-text">Abriendo simulador…</p>
+  </div>
+
+  <script>
+    /* Tema */
+    const THEME_KEY = 'fiunva-theme';
+    const rootEl = document.documentElement;
+    function getTheme() { return rootEl.getAttribute('data-theme') || 'light'; }
+    function applyTheme(theme) {
+      rootEl.setAttribute('data-theme', theme);
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    }
+    function initTheme() {
+      let saved = null;
+      try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+      const urlTheme = new URLSearchParams(window.location.search).get('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(urlTheme || saved || (prefersDark ? 'dark' : 'light'));
+    }
+    function toggleTheme() { applyTheme(getTheme() === 'dark' ? 'light' : 'dark'); }
+
+    /* Cross-tab synchronization */
+    window.addEventListener('storage', (e) => {
+      if (e.key === THEME_KEY && e.newValue) {
+        applyTheme(e.newValue);
+        const thBtn = document.getElementById('th');
+        if (thBtn) {
+          thBtn.textContent = e.newValue === 'dark' ? '◑' : '◐';
+          thBtn.setAttribute('aria-label', e.newValue === 'dark' ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+        }
+      }
+    });
+
+    /* Logo oficial FIUNVA (sin cambios; markOnly muestra solo el isotipo) */
+    function createFiunvaLockupSVG({ width = 280, extraSvgTop = '', extraSvgBottom = '', animClass = '', clipId = '', markOnly = false } = {}) {
+      const clipAttr = clipId ? `clip-path="url(#${clipId})"` : '';
+      const vb = markOnly ? '0 0 426 366' : '0 0 426 470';
+      const word = markOnly ? '' : `<text class="fiunva-svg-wordmark js-fit" data-l="24.75" data-w="376.5" data-g=".09" x="24.75" y="460" font-size="112" textLength="376.5" lengthAdjust="spacing">FIUNVA</text>`;
+      return `
+        <svg class="fiunva-master-svg ${animClass}" style="width:${width}px; height:auto; overflow:visible;" viewBox="${vb}" role="img" aria-label="Logotipo oficial FIUNVA">
+          ${extraSvgTop}
+          <g ${clipAttr}>
+            <path fill="#00D6EB" fill-rule="evenodd" d="M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z"/>
+            <path fill="var(--logo-ink)" fill-rule="evenodd" d="M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z"/>
+          </g>
+          ${word}
+          ${extraSvgBottom}
+        </svg>
+      `;
+    }
+
+    /* Ajusta el tamaño de las letras para ocupar el ancho con un espacio fijo entre ellas */
+    function fitWordmarks() {
+      document.querySelectorAll('.js-fit').forEach(el => {
+        try {
+          const l = +el.dataset.l, w = +el.dataset.w, g = +el.dataset.g, n = el.textContent.length;
+          el.removeAttribute('textLength'); el.removeAttribute('lengthAdjust');
+          el.setAttribute('x', l); el.setAttribute('font-size', 100);
+          const nat = el.getBBox().width;
+          if (!(nat > 0)) return;
+          el.setAttribute('font-size', (100 * w / (nat + (n - 1) * g * 100)).toFixed(2));
+          el.setAttribute('textLength', w); el.setAttribute('lengthAdjust', 'spacing');
+        } catch (e) {}
+      });
+    }
+    function calibrateAllWordmarks() { fitWordmarks(); }
+
+    function createPilibotWordmark(uid) {
+      const t = (cls, st) => `<text class="${cls} js-fit" style="${st}" data-l="24" data-w="422" data-g=".09" x="24" y="110" font-size="112" textLength="422" lengthAdjust="spacing">PILIBOT</text>`;
+      const anim = d => `<animateTransform attributeName="gradientTransform" type="translate" from="0 0" to="470 0" dur="${d}s" repeatCount="indefinite"/>`;
+      return `<svg viewBox="0 0 470 128" role="img" aria-label="PILIBOT" style="overflow:visible">
+        <defs>
+          <linearGradient id="pg-${uid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="470" y2="0" spreadMethod="repeat"><stop offset="0" style="stop-color:var(--e1)"/><stop offset=".3" style="stop-color:var(--e2)"/><stop offset=".5" style="stop-color:var(--e3)"/><stop offset=".7" style="stop-color:var(--e2)"/><stop offset="1" style="stop-color:var(--e1)"/>${anim(6)}</linearGradient>
+          <linearGradient id="pgl-${uid}" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="470" y2="0" spreadMethod="repeat"><stop offset="0" style="stop-color:var(--glint)" stop-opacity="0"/><stop offset=".4" style="stop-color:var(--glint)" stop-opacity="0"/><stop offset=".5" style="stop-color:var(--glint)" stop-opacity=".95"/><stop offset=".6" style="stop-color:var(--glint)" stop-opacity="0"/><stop offset="1" style="stop-color:var(--glint)" stop-opacity="0"/>${anim(3.4)}</linearGradient>
+        </defs>
+        ${t('pili-wordmark', `stroke:url(#pg-${uid})`)}
+        ${t('pili-glint', `stroke:url(#pgl-${uid})`)}</svg>`;
+    }
+
+    /* Pantalla de inicio: animación CAD de FIUNVA (sin líneas guía) */
+    function runSplashScreen() {
+      return new Promise(resolve => {
+        const splash = document.getElementById('splash');
+        const logoEl = document.getElementById('splash-logo');
+        logoEl.innerHTML = `
+          <div class="cad-container">
+            <svg class="cad-lockup-svg" viewBox="0 0 426 495" role="img" aria-label="FIUNVA CAD Intro">
+              <path class="cad-stroke-cyan" fill-rule="evenodd" d="M376,32 L360,88 L167,88 L165,90 L87,362 L165,244 L316,244 L316,253 L303,297 L405,167Z M179,196 L197,137 L347,138 L335,186 L330,197Z"/>
+              <path class="cad-stroke-ink" fill-rule="evenodd" d="M196,184 L322,184 L332,150 L206,150Z M365,17 L112,18 L21,348 L75,348 L151,82 L155,74 L348,74Z"/>
+              <g class="cad-wordmark-anim">
+                <text class="fiunva-svg-wordmark js-fit" data-l="24.75" data-w="376.5" data-g=".09" x="24.75" y="460" font-size="112" textLength="376.5" lengthAdjust="spacing">FIUNVA</text>
+              </g>
+            </svg>
+          </div>
+        `;
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(calibrateAllWordmarks);
+        setTimeout(() => {
+          splash.classList.add('hidden');
+          document.body.classList.add('loaded');
+          setTimeout(() => { splash.style.display = 'none'; resolve(); }, 600);
+        }, 2400);
+      });
+    }
+
+    /* Cargador de simulador */
+    let loaderTimer = null;
+    function showLoader() {
+      const bar = document.getElementById('loader-bar');
+      bar.style.width = '0';
+      document.getElementById('loading').classList.add('visible');
+      let p = 0;
+      clearInterval(loaderTimer);
+      loaderTimer = setInterval(() => { p = Math.min(100, p + 7); bar.style.width = p + '%'; if (p >= 100) clearInterval(loaderTimer); }, 60);
+    }
+    function hideLoader() {
+      clearInterval(loaderTimer);
+      document.getElementById('loading').classList.remove('visible');
+    }
+
+    function launchSimulator(simId, newTab = true) {
+      const paths = { 'sim3d': 'SIM3D/index.html', 'simam': 'SIMAM/index.html' };
+      const path = paths[simId];
+      if (!path) return;
+      showLoader();
+      const url = path + '?theme=' + getTheme();
+      setTimeout(() => {
+        if (newTab) window.open(url, '_blank', 'noopener,noreferrer');
+        else window.location.href = url;
+        setTimeout(hideLoader, 1500);
+      }, 900);
+    }
+
+    /* ====== Medios: assets/ folder ====== */
+    const MEDIA = {
+      /* Portada: 5 imágenes del robot */
+      hero: [
+        { src: 'assets/img/IM1.png', alt: 'PILIBOT vista frontal' },
+        { src: 'assets/img/IM2.png', alt: 'PILIBOT vista cenital' },
+        { src: 'assets/img/IM3.png', alt: 'PILIBOT vista lateral' },
+        { src: 'assets/img/IM4.png', alt: 'PILIBOT detalle frontal' },
+        { src: 'assets/img/IM5.png', alt: 'PILIBOT detalle trasero' }
+      ],
+      /* Ensamble: 8 pasos */
+      assembly: [
+        { src: 'assets/img/asm/IM1.png', alt: 'PCB 1 & PCB 2', title: 'PCB 1 & PCB 2', text: 'Las dos placas de la arquitectura electrónica: PCB 1, de energía e interfaz, y PCB 2, de lógica y actuación.' },
+        { src: 'assets/img/asm/IM2.png', alt: 'Acoplamiento', title: 'Acoplamiento', text: 'Acoplamiento de las PCBs y los motores.' },
+        { src: 'assets/img/asm/IM3.png', alt: 'Chasis & Electrónica', title: 'Chasis & Electrónica', text: 'El chasis de MDF de 3 mm y la electrónica, listos para integrarse.' },
+        { src: 'assets/img/asm/IM4.png', alt: 'Electrónica en la tapa', title: 'Electrónica en la tapa', text: 'Ensamble electrónico sobre una de las tapas del chasis.' },
+        { src: 'assets/img/asm/IM5.png', alt: 'Segunda tapa', title: 'Segunda tapa', text: 'Preparación de la segunda tapa del chasis para su acople.' },
+        { src: 'assets/img/asm/IM6.png', alt: 'Acople de tapa', title: 'Acople de tapa', text: 'Acople de la segunda tapa.' },
+        { src: 'assets/img/asm/IM7.png', alt: 'Tapas laterales', title: 'Tapas laterales', text: 'Robot con sus tapas laterales ensambladas.' },
+        { src: 'assets/img/asm/IM8.png', alt: 'Ensamble final', title: 'Ensamble final', text: 'Ensamble terminado con sus tapas posterior y frontal.' }
+      ],
+      /* Video principal para sección "En acción" */
+      video: { src: 'assets/video/V3.mp4', poster: null, cropTop: 1 / 8 }, /* oculta 1/8 superior */
+      /* Video VA0: junto al de funcionamiento, mismo alto que V3, ancho proporcional */
+      videoVA1: { src: 'assets/video/VA0' },
+      /* Sistema de visión: 1 robot y 2 robots */
+      vision: [
+        { src: 'assets/video/VA1', title: 'Un robot', text: 'Se ancla a la trayectoria hacia un solo cubo: azul al avanzar, rojo al impactar y empujar, verde al alejarse.' },
+        { src: 'assets/video/VA2', title: 'Dos robots', text: 'El mismo seguimiento y el mismo código de colores, con dos robots a la vez.' }
+      ]
+    };
+
+    /* Ilustraciones de relleno mientras no existan las fotos */
+    const PH = [
+      '<svg viewBox="0 0 200 160"><rect x="30" y="92" width="10" height="38" rx="4" fill="var(--muted)" opacity=".5"/><rect x="160" y="92" width="10" height="38" rx="4" fill="var(--muted)" opacity=".5"/><rect x="40" y="28" width="120" height="104" rx="24" fill="var(--card)" stroke="var(--muted)" stroke-width="1.5"/><rect x="56" y="44" width="88" height="50" rx="11" fill="#000"/><rect class="eye" x="72" y="58" width="20" height="22" rx="5"/><rect class="eye" x="108" y="58" width="20" height="22" rx="5"/><circle class="led" cx="100" cy="112" r="4.5"/></svg>',
+      '<svg viewBox="0 0 200 160"><rect x="24" y="48" width="14" height="64" rx="5" fill="var(--muted)" opacity=".5"/><rect x="162" y="48" width="14" height="64" rx="5" fill="var(--muted)" opacity=".5"/><rect x="38" y="24" width="124" height="112" rx="22" fill="var(--card)" stroke="var(--muted)" stroke-width="1.5"/><rect x="56" y="44" width="88" height="72" rx="8" fill="none" stroke="var(--muted)" stroke-dasharray="4 4" opacity=".6"/><rect x="82" y="64" width="36" height="32" rx="5" fill="#000"/><circle cx="100" cy="34" r="4" fill="#00e5ff"/></svg>',
+      '<svg viewBox="0 0 200 160"><rect x="40" y="42" width="120" height="76" rx="18" fill="var(--card)" stroke="var(--muted)" stroke-width="1.5"/><path d="M52 62h96" stroke="var(--muted)" opacity=".5"/><circle cx="100" cy="120" r="24" fill="var(--muted)" opacity=".45"/><circle cx="100" cy="120" r="9" fill="var(--card)"/><rect x="132" y="70" width="14" height="14" rx="3" fill="#00e5ff"/></svg>',
+      '<svg viewBox="0 0 200 160"><rect x="40" y="30" width="120" height="100" rx="20" fill="var(--card)" stroke="var(--muted)" stroke-width="1.5"/><rect x="56" y="50" width="88" height="60" rx="10" fill="#0b0b0d"/><rect class="eye" x="74" y="64" width="22" height="24" rx="6"/><rect class="eye" x="104" y="64" width="22" height="24" rx="6"/><circle class="led" cx="100" cy="120" r="5"/></svg>',
+      '<svg viewBox="0 0 200 160"><rect x="36" y="36" width="128" height="88" rx="18" fill="var(--card)" stroke="var(--muted)" stroke-width="1.5"/><rect x="52" y="52" width="96" height="56" rx="8" fill="none" stroke="var(--muted)" stroke-dasharray="6 4" opacity=".6"/><rect x="80" y="66" width="40" height="28" rx="6" fill="#00e5ff" opacity=".8"/><circle class="led" cx="100" cy="130" r="5"/></svg>'
+    ];
+    function layersSVG(k) {
+      let b = '';
+      for (let j = 0; j < 5; j++) {
+        const on = j === k, y = 20 + (4 - j) * 26;
+        b += `<rect x="${on ? 36 : 52}" y="${y}" width="${on ? 128 : 96}" height="14" rx="5" fill="${on ? 'url(#lg)' : 'none'}" stroke="${on ? 'none' : 'var(--muted)'}" stroke-opacity=".5"/>`;
+      }
+      return `<svg viewBox="0 0 200 150"><defs><linearGradient id="lg" x1="0" x2="1"><stop offset="0" style="stop-color:var(--i1)"/><stop offset="1" style="stop-color:var(--i3)"/></linearGradient></defs>${b}</svg>`;
+    }
+
+    /* ====== Ajuste automático de imágenes con fondo transparente ======
+       1) Detecta los píxeles visibles (alfa > UMBRAL).
+       2) Agrupa los fragmentos cercanos y descarta las manchas pequeñas aisladas.
+       3) Recorta el espacio vacío alrededor del objeto principal, con un margen. */
+    const SMART = { umbral: 24, minRel: 0.015, margen: 0.05, maxAnalisis: 640, maxSalida: 1600 };
+
+    function analyzeAlpha(alpha, w, h, o) {
+      const T = o.umbral, n = w * h;
+      const bin = new Uint8Array(n);
+      let any = false;
+      for (let i = 0; i < n; i++) if (alpha[i] > T) { bin[i] = 1; any = true; }
+      if (!any) return null;
+      /* Dilatación cuadrada separable para unir fragmentos del mismo objeto */
+      const r = Math.max(1, Math.round(Math.max(w, h) / 320));
+      const tmp = new Uint8Array(n), dil = new Uint8Array(n);
+      for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+        let v = 0;
+        for (let k = Math.max(0, x - r); k <= Math.min(w - 1, x + r) && !v; k++) v = bin[y * w + k];
+        tmp[y * w + x] = v;
+      }
+      for (let x = 0; x < w; x++) for (let y = 0; y < h; y++) {
+        let v = 0;
+        for (let k = Math.max(0, y - r); k <= Math.min(h - 1, y + r) && !v; k++) v = tmp[k * w + x];
+        dil[y * w + x] = v;
+      }
+      /* Componentes conexos (8 vecinos) sobre la máscara dilatada */
+      const lab = new Int32Array(n), areas = [0], stack = new Int32Array(n);
+      let c = 0;
+      for (let s = 0; s < n; s++) {
+        if (!dil[s] || lab[s]) continue;
+        c++; let sp = 0, area = 0;
+        stack[sp++] = s; lab[s] = c;
+        while (sp) {
+          const p = stack[--sp]; area++;
+          const px = p % w, py = (p - px) / w;
+          for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+            const qx = px + dx, qy = py + dy;
+            if (qx < 0 || qy < 0 || qx >= w || qy >= h) continue;
+            const q = qy * w + qx;
+            if (dil[q] && !lab[q]) { lab[q] = c; stack[sp++] = q; }
+          }
+        }
+        areas.push(area);
+      }
+      const largest = Math.max(...areas);
+      const minArea = Math.max(largest * o.minRel, n * 0.0002);
+      const keep = areas.map(a => a >= minArea);
+      const mask = new Uint8Array(n);
+      let x0 = w, y0 = h, x1 = -1, y1 = -1, removed = 0;
+      for (let i = 0; i < n; i++) {
+        if (!lab[i]) continue;
+        if (!keep[lab[i]]) { if (bin[i]) removed++; continue; }
+        mask[i] = 1;
+        if (bin[i]) {
+          const x = i % w, y = (i - x) / w;
+          if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y;
+        }
+      }
+      if (x1 < 0) return null;
+      const pad = Math.round(Math.max(x1 - x0 + 1, y1 - y0 + 1) * o.margen) + r + 1;
+      return {
+        mask, removed,
+        box: { x0: Math.max(0, x0 - pad), y0: Math.max(0, y0 - pad), x1: Math.min(w - 1, x1 + pad), y1: Math.min(h - 1, y1 + pad) }
+      };
+    }
+
+    function processImage(im) {
+      const W = im.naturalWidth, H = im.naturalHeight;
+      const sc = Math.min(1, SMART.maxAnalisis / Math.max(W, H));
+      const aw = Math.max(1, Math.round(W * sc)), ah = Math.max(1, Math.round(H * sc));
+      const cv = document.createElement('canvas');
+      cv.width = aw; cv.height = ah;
+      const cx = cv.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(im, 0, 0, aw, ah);
+      const px = cx.getImageData(0, 0, aw, ah).data; /* lanza error si el archivo se abre con file:// */
+      const alpha = new Uint8Array(aw * ah);
+      let clear = 0;
+      for (let i = 0; i < alpha.length; i++) { alpha[i] = px[i * 4 + 3]; if (alpha[i] < 250) clear++; }
+      if (clear / alpha.length < 0.02) return Promise.resolve({ url: im.src, kind: 'opaque' }); /* sin transparencia: no se toca */
+      const res = analyzeAlpha(alpha, aw, ah, SMART);
+      if (!res) return Promise.resolve({ url: im.src, kind: 'alpha' });
+      const b = res.box;
+      const sx = Math.floor(b.x0 / sc), sy = Math.floor(b.y0 / sc);
+      const sw = Math.min(W - sx, Math.ceil((b.x1 - b.x0 + 1) / sc)), sh = Math.min(H - sy, Math.ceil((b.y1 - b.y0 + 1) / sc));
+      const os = Math.min(1, SMART.maxSalida / Math.max(sw, sh));
+      const ow = Math.max(1, Math.round(sw * os)), oh = Math.max(1, Math.round(sh * os));
+      const out = document.createElement('canvas');
+      out.width = ow; out.height = oh;
+      const ox = out.getContext('2d', { willReadFrequently: true });
+      ox.drawImage(im, sx, sy, sw, sh, 0, 0, ow, oh);
+      if (res.removed) { /* borra las manchas descartadas */
+        const d = ox.getImageData(0, 0, ow, oh), data = d.data;
+        const cols = new Int32Array(ow);
+        for (let x = 0; x < ow; x++) cols[x] = Math.min(aw - 1, Math.floor((sx + x / os) * sc));
+        for (let y = 0; y < oh; y++) {
+          const row = Math.min(ah - 1, Math.floor((sy + y / os) * sc)) * aw;
+          for (let x = 0; x < ow; x++) if (!res.mask[row + cols[x]]) data[(y * ow + x) * 4 + 3] = 0;
+        }
+        ox.putImageData(d, 0, 0);
+      }
+      return new Promise(r => out.toBlob(bl => r({ url: bl ? URL.createObjectURL(bl) : im.src, kind: 'alpha' }), 'image/png'));
+    }
+
+    const SMART_CACHE = new Map();
+    function smartImage(src) {
+      if (!SMART_CACHE.has(src)) SMART_CACHE.set(src, new Promise(resolve => {
+        const im = new Image();
+        im.onload = () => {
+          try { resolve(processImage(im)); }
+          catch (e) { console.info('Ajuste automático omitido (abre la página desde un servidor, no con file://):', src); resolve({ url: src, kind: 'alpha' }); }
+        };
+        im.onerror = () => resolve(null);
+        im.src = src;
+      }));
+      return SMART_CACHE.get(src);
+    }
+    /* Carga la imagen ajustada dentro de <img> (con data-src) y avisa si falta el archivo */
+    function smartSet(img, holder) {
+      smartImage(img.dataset.src).then(res => {
+        if (!res) { holder.classList.add('missing'); return; }
+        img.src = res.url;
+        img.classList.add('ready', res.kind === 'opaque' ? 'opq' : 'alpha');
+      });
+    }
+    /* Igual que smartSet, pero espera a que la imagen esté cerca de la pantalla */
+    function smartLazy(img, holder) {
+      const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io.disconnect(); smartSet(img, holder); } }, { rootMargin: '500px' });
+      io.observe(holder);
+    }
+
+    /* Oculta fracción lateral y/o vertical del video y ajusta la proporción del contenedor al área visible */
+    function cropVideo(box, vd, top, bottom, left, right) {
+      top = top || 0; bottom = bottom || 0; left = left || 0; right = right || 0;
+      const visV = 1 - top - bottom; /* fracción visible del alto */
+      const visH = 1 - left - right; /* fracción visible del ancho */
+      /* El video cubre el contenedor (object-fit:cover); el contenedor tiene la proporción del área visible,
+         así que el recorte es automático y simétrico en ambos ejes. */
+      vd.style.width = '100%';
+      vd.style.height = '100%';
+      vd.style.left = '0';
+      vd.style.top = '0';
+      const applyAr = () => {
+        if (vd.videoWidth && vd.videoHeight) {
+          const ar = (vd.videoWidth / vd.videoHeight) * (visH / visV);
+          box.style.setProperty('--ar', ar);
+          /* Forzar recálculo del contenedor */
+          box.style.height = box.offsetHeight + 'px';
+        }
+      };
+      vd.addEventListener('loadedmetadata', applyAr);
+      /* Si el video ya tiene metadatos, aplicar inmediatamente */
+      if (vd.videoWidth) applyAr();
+    }
+    /* Acepta un nombre o una lista; si no tiene extensión prueba .mp4, .webm y .mov */
+    function videoSources(src) {
+      return [].concat(src).flatMap(b => /\.\w{2,4}$/.test(b) ? [b] : ['mp4', 'webm', 'mov'].map(e => b + '.' + e));
+    }
+
+    function initMedia() {
+      const $ = (q) => document.querySelector(q);
+      const pad = (n) => String(n).padStart(2, '0');
+      const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+      /* --- Carrusel de portada: imagen central con la anterior y la siguiente a los lados --- */
+      const car = $('#hero-car'), stage = $('#hc-stage'), dotsEl = $('#hc-dots');
+      const H = MEDIA.hero, N = H.length;
+      let hi = 0, hHover = false, hUntil = 0, hVis = true;
+      const slides = H.map((it, k) => {
+        const f = document.createElement('figure');
+        f.className = 'hc-slide';
+        f.innerHTML = `<img class="sm" data-src="${it.src}" alt="${it.alt}" draggable="false"><div class="ph" aria-hidden="true">${PH[k % PH.length]}</div>`;
+        smartSet(f.querySelector('img'), f);
+        f.addEventListener('click', () => {
+          if (f.dataset.pos === '1') goH(hi + 1, true);
+          else if (f.dataset.pos === '-1') goH(hi - 1, true);
+        });
+        stage.appendChild(f);
+        return f;
+      });
+      const dots = H.map((_, k) => {
+        const d = document.createElement('button');
+        d.setAttribute('aria-label', 'Ir a la foto ' + (k + 1));
+        d.addEventListener('click', () => goH(k, true));
+        dotsEl.appendChild(d);
+        return d;
+      });
+      function goH(n, manual) {
+        hi = (n + N) % N;
+        slides.forEach((s, k) => {
+          let o = ((k - hi) % N + N) % N;
+          if (o > N / 2) o -= N;
+          s.dataset.pos = Math.abs(o) <= 1 ? String(o) : 'out';
+          s.setAttribute('aria-hidden', o === 0 ? 'false' : 'true');
+        });
+        dots.forEach((d, k) => d.classList.toggle('on', k === hi));
+        if (manual) hUntil = Date.now() + 6000;
+      }
+      goH(0);
+      $('#hc-prev').addEventListener('click', () => goH(hi - 1, true));
+      $('#hc-next').addEventListener('click', () => goH(hi + 1, true));
+      car.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') { goH(hi - 1, true); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { goH(hi + 1, true); e.preventDefault(); }
+      });
+      let sx = null;
+      stage.addEventListener('pointerdown', e => { sx = e.clientX; });
+      stage.addEventListener('pointerup', e => {
+        if (sx !== null && Math.abs(e.clientX - sx) > 40) goH(hi + (e.clientX < sx ? 1 : -1), true);
+        sx = null;
+      });
+      car.addEventListener('pointermove', e => {
+        const r = car.getBoundingClientRect();
+        car.style.setProperty('--px', ((e.clientX - r.left) / r.width - .5) * 2);
+        car.style.setProperty('--py', ((e.clientY - r.top) / r.height - .5) * 2);
+      });
+      car.addEventListener('pointerenter', () => { hHover = true; });
+      car.addEventListener('pointerleave', () => { hHover = false; car.style.setProperty('--px', 0); car.style.setProperty('--py', 0); });
+      new IntersectionObserver(([e]) => { hVis = e.isIntersecting; }, { threshold: .3 }).observe(car);
+      if (!reduce) setInterval(() => { if (hVis && !hHover && Date.now() > hUntil && !document.hidden) goH(hi + 1); }, 2400); /* el doble de rápido */
+
+      /* --- Carrusel de ensamble: pistas horizontales por paso, con temporizador visible --- */
+      const A = MEDIA.assembly, asm = $('#asm'), track = $('#asm-track'), prog = $('#asm-prog'), count = $('#asm-count');
+      const cards = A.map((it, k) => {
+        const c = document.createElement('article');
+        c.className = 'asm-card';
+        c.setAttribute('aria-label', `Paso ${k + 1} de ${A.length}`);
+        c.innerHTML = `<div class="asm-img"><img class="sm" data-src="${it.src}" alt="${it.alt}" draggable="false"><div class="ph" aria-hidden="true">${layersSVG(k)}</div></div><div class="asm-txt"><span class="num">Paso ${pad(k + 1)}</span><h3>${it.title}</h3><p>${it.text}</p></div>`;
+        smartLazy(c.querySelector('img'), c);
+        track.appendChild(c);
+        return c;
+      });
+      const segs = A.map((_, k) => {
+        const b = document.createElement('button');
+        b.className = 'seg';
+        b.setAttribute('aria-label', 'Ir al paso ' + (k + 1));
+        b.innerHTML = '<i></i>';
+        b.addEventListener('click', () => goA(k));
+        prog.appendChild(b);
+        return b;
+      });
+      let ai = -1, lock = false;
+      const stepW = () => cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth;
+      function setA(k) {
+        if (k === ai) return;
+        ai = k;
+        cards.forEach((c, j) => c.classList.toggle('on', j === k));
+        segs.forEach((s, j) => { s.classList.toggle('done', j < k); s.classList.remove('on'); });
+        void prog.offsetWidth;
+        segs[k].classList.add('on');
+        count.textContent = `${pad(k + 1)} / ${pad(A.length)}`;
+      }
+      function goA(k) {
+        k = (k + A.length) % A.length;
+        lock = true; setTimeout(() => { lock = false; }, 800);
+        track.scrollTo({ left: k * stepW(), behavior: reduce ? 'auto' : 'smooth' });
+        setA(k);
+      }
+      setA(0);
+      track.addEventListener('scroll', () => {
+        if (lock) return;
+        setA(Math.max(0, Math.min(A.length - 1, Math.round(track.scrollLeft / stepW()))));
+      }, { passive: true });
+      track.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') { goA(ai - 1); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { goA(ai + 1); e.preventDefault(); }
+      });
+      $('#asm-prev').addEventListener('click', () => goA(ai - 1));
+      $('#asm-next').addEventListener('click', () => goA(ai + 1));
+      prog.addEventListener('animationend', e => { if (e.target.parentElement.classList.contains('on')) goA(ai + 1); });
+      new IntersectionObserver(([e]) => asm.classList.toggle('off', !e.isIntersecting), { threshold: .35 }).observe(asm);
+
+      /* --- Videos: se reproducen en silencio al verse y se pausan al salir --- */
+      function bindVideo(box, v, cfg) {
+        if (cfg.poster) v.poster = cfg.poster;
+        const cands = videoSources(cfg.src); let ci = 0;
+        v.src = cands[0] + '#t=0.1'; /* muestra el primer cuadro como portada */
+        v.addEventListener('error', () => { if (++ci < cands.length) v.src = cands[ci] + '#t=0.1'; });
+        const ph = box.querySelector('.vid-ph span'); if (ph) ph.textContent = cands[0];
+        if (cfg.cropTop !== undefined || cfg.cropBottom !== undefined || cfg.cropLeft !== undefined || cfg.cropRight !== undefined) cropVideo(box, v, cfg.cropTop, cfg.cropBottom, cfg.cropLeft, cfg.cropRight);
+        v.addEventListener('loadedmetadata', () => { box.classList.add('ready'); if (cfg.onMeta) cfg.onMeta(v); });
+        let manual = false, auto = false;
+        v.addEventListener('pause', () => { if (!auto) manual = true; });
+        v.addEventListener('play', () => { manual = false; });
+        new IntersectionObserver(([e]) => {
+          if (e.isIntersecting) { if (!manual) v.play().catch(() => {}); }
+          else { auto = true; v.pause(); setTimeout(() => { auto = false; }, 80); }
+        }, { threshold: .5 }).observe(box);
+      }
+      bindVideo($('#vid'), $('#pv'), MEDIA.video);
+      bindVideo($('#vid2'), $('#pv2'), { src: MEDIA.videoVA1.src, onMeta: v => { $('#vid2').style.setProperty('--ar', v.videoWidth / v.videoHeight); } });
+
+      const visGrid = $('#vis-grid'), PLAY = '<svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="26"/><path d="M23 19l15 9-15 9z"/></svg>';
+      MEDIA.vision.forEach(it => {
+        const fig = document.createElement('figure');
+        fig.className = 'vf';
+        fig.innerHTML = `<div class="vid"><video muted loop playsinline preload="metadata" aria-label="${it.title}"></video><div class="vid-ph">${PLAY}<b>${it.title}</b><span></span></div></div><figcaption><b>${it.title}</b><span>${it.text}</span></figcaption>`;
+        visGrid.appendChild(fig);
+        const box = fig.querySelector('.vid'), vd = fig.querySelector('video');
+        bindVideo(box, vd, { src: it.src, onMeta: v => { if (!visGrid.dataset.set && v.videoWidth) { visGrid.dataset.set = 1; visGrid.style.setProperty('--ar', v.videoWidth / v.videoHeight); } } });
+        box.addEventListener('click', () => { vd.paused ? vd.play().catch(() => {}) : vd.pause(); });
+      });
+
+      /* --- Galería: solo imágenes (fotos del robot sin títulos; ensamble con título y descripción) --- */
+      const createMediaItem = (item) => {
+        const div = document.createElement('div');
+        div.className = 'media-item';
+        div.setAttribute('role', 'figure');
+        div.setAttribute('aria-label', item.title || item.alt);
+        const img = document.createElement('img');
+        img.className = 'sm'; img.dataset.src = item.src; img.alt = item.alt; img.draggable = false;
+        const wrap = document.createElement('div');
+        wrap.className = 'mi-img';
+        wrap.appendChild(img);
+        const ph = document.createElement('div');
+        ph.className = 'ph'; ph.setAttribute('aria-hidden', 'true'); ph.innerHTML = PH[0];
+        wrap.appendChild(ph);
+        div.appendChild(wrap);
+        smartLazy(img, div);
+        if (item.title) {
+          const cap = document.createElement('p');
+          cap.className = 'media-caption';
+          cap.innerHTML = `<b>${item.title}</b><span>${item.text}</span>`;
+          div.appendChild(cap);
+        }
+        return div;
+      };
+      MEDIA.hero.forEach(it => $('#gallery-hero').appendChild(createMediaItem(it)));
+      MEDIA.assembly.forEach(it => $('#gallery-assembly').appendChild(createMediaItem(it)));
+    }
+
+    function initNav() {
+      const links = [...document.querySelectorAll('.links a')], map = new Map(links.map(a => [a.getAttribute('href').slice(1), a]));
+      const io = new IntersectionObserver(es => es.forEach(e => {
+        if (!e.isIntersecting) return;
+        links.forEach(l => l.classList.remove('active'));
+        const a = map.get(e.target.id); if (a) a.classList.add('active');
+      }), { rootMargin: '-45% 0px -50% 0px' });
+      map.forEach((_, id) => { const el = document.getElementById(id); if (el) io.observe(el); });
+    }
+
+    async function init() {
+      initTheme();
+      initMedia();
+      document.getElementById('splash-logo').innerHTML = createFiunvaLockupSVG({ width: 150 });
+      document.getElementById('pili-wordmark').innerHTML = createPilibotWordmark('h');
+      document.getElementById('nav-word').innerHTML = createPilibotWordmark('n');
+      document.getElementById('footer-logo').innerHTML = createFiunvaLockupSVG({ width: 120 });
+      initNav();
+      if (document.fonts && document.fonts.load) document.fonts.load('italic 700 100px "Barlow Condensed"').then(fitWordmarks);
+      fitWordmarks();
+      const nav = document.querySelector('nav.top');
+      addEventListener('scroll', () => { const h = document.documentElement; nav.style.setProperty('--p', (100 * h.scrollTop / ((h.scrollHeight - h.clientHeight) || 1)) + '%'); }, { passive: true });
+      document.getElementById('loader-logo').innerHTML = createFiunvaLockupSVG({ width: 120 });
+      document.getElementById('nav-logo').innerHTML = createFiunvaLockupSVG({ width: 60, markOnly: true });
+      await runSplashScreen();
+      setTimeout(calibrateAllWordmarks, 100);
+      document.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'd') { e.preventDefault(); toggleTheme(); }
+      });
+    }
+    init();
+  </script>
+</body>
+</html>

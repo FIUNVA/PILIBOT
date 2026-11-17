@@ -1,0 +1,2 @@
+figure{margin:10px 0}canvas{width:100%;display:block;border:1px solid var(--ln);background:var(--bg);touch-action:none}#W{height:clamp(320px,62vh,640px);cursor:crosshair}#Pl{aspect-ratio:800/340}
+figcaption{font-size:14px;color:var(--mut);margin-top:4px}figcaption b{color:var(--fg)}

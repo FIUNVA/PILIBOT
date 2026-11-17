@@ -1,0 +1,2 @@
+.wrap{max-width:1280px;margin:0 auto;padding:0 16px 40px;display:grid;grid-template-columns:minmax(0,1.55fr) minmax(290px,1fr);gap:0 28px}
+@media(max-width:920px){.wrap{grid-template-columns:minmax(0,1fr)}}
